@@ -52,7 +52,7 @@ const ChatApp = () => {
 
   return (
     <div className="App w-full min-h-screen over flex flex-col items-center justify-end bg-gradient-to-b from-blue-400 to-blue-500 text-white p-5">
-      <h1 className="text-3xl my-5 font-bold">Jarvis AI</h1>
+      <h1 className="text-3xl md:text-5xl my-5 font-bold">Jarvis AI</h1>
       {conversation.length === 0 ? (
         <div className="flex items-center mb-12 justify-center gap-5 flex-col">
           <img className="rounded-md" src="https://ik.imagekit.io/vituepzjm/maskable_icon_x192.png?updatedAt=1713176875195" alt="Empty" />
