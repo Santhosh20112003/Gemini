@@ -51,14 +51,15 @@ const ChatApp = () => {
   };
 
   return (
-    <div className="App w-full min-h-screen flex flex-col items-center justify-end bg-gradient-to-b from-blue-400 to-blue-500 text-white p-5">
+    <div className="App w-full min-h-screen over flex flex-col items-center justify-end bg-gradient-to-b from-blue-400 to-blue-500 text-white p-5">
+      <h1 className="text-3xl my-5 font-bold">Jarvis AI</h1>
       {conversation.length === 0 ? (
         <div className="flex items-center mb-12 justify-center gap-5 flex-col">
           <img className="rounded-md" src="https://ik.imagekit.io/vituepzjm/maskable_icon_x192.png?updatedAt=1713176875195" alt="Empty" />
           <p className="md:text-3xl text-xl text-white font-bold">How can I help you today?</p>
         </div>
       ) : (
-        <div className="px-5 md:mx-20 flex flex-col gap-5 mb-5 overflow-y-auto max-h-[75vh] w-full md:w-[70%]">
+        <div className="px-5 md:mx-20 flex flex-col gap-5 mb-5 overflow-y-auto max-h-[70vh] w-full md:w-[70%]">
           {conversation.map((msg, index) => (
             <div key={index} className="flex flex-col items-start gap-3 bg-gray-100 text-gray-500 p-4 rounded-xl">
               <div>{msg.user && <p><strong className="text-gray-700">You:&nbsp;</strong> {msg.user}</p>}</div>
@@ -75,7 +76,7 @@ const ChatApp = () => {
           placeholder="Enter a prompt here.."
           className="p-2 rounded-sm hover:outline-none bg-transparent focus:outline-none hover:ring-0 w-auto md:w-full text-black"
         />
-        <button type="submit" className="text-blue-500  hidden md:block  focus:outline-none font-bold py-2 px-3 rounded-full" disabled={loading}>
+        <button type="submit" className="text-blue-500 hidden md:block  focus:outline-none font-bold py-2 px-3 rounded-full" disabled={loading}>
           {loading ? <FaSpinner className="animate-spin" /> : "Send"} 
         </button>
       </form>
