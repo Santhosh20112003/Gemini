@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FaSpinner } from 'react-icons/fa'; 
@@ -55,7 +56,7 @@ const ChatApp = () => {
       <h1 className="text-3xl md:text-5xl my-5 font-bold">Jarvis AI</h1>
       {conversation.length === 0 ? (
         <div className="flex items-center mb-12 justify-center gap-5 flex-col">
-          <img className="rounded-md" src="https://ik.imagekit.io/vituepzjm/maskable_icon_x192.png?updatedAt=1713176875195" alt="Empty" />
+          <img className="rounded-md" src="https://source.unsplash.com/random/250x250/?digital image" alt="Empty" />
           <p className="md:text-3xl text-xl text-white font-bold">How can I help you today?</p>
         </div>
       ) : (
