@@ -4,11 +4,14 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
-import { FaSpinner, FaCopy, FaShare } from "react-icons/fa";
+import { TbBrandWhatsapp } from "react-icons/tb";
+import { TbCopy } from "react-icons/tb";
+import { FaSpinner } from "react-icons/fa";
 import showdown from "showdown";
 import "./chat.css";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
+import { ParseDate } from "./common/links";
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyDeBKc55K7B4fIroENBhjlNxTYX5fAecKM";
@@ -51,7 +54,6 @@ const ChatApp = () => {
   const [conversation, setConversation] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [copiedResponse, setCopiedResponse] = useState("");
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -117,7 +119,7 @@ const ChatApp = () => {
 
       const text = await response.text();
 
-      const newMessage = { user: message, bot: text };
+      const newMessage = { user: message, bot: text, timestamp: new Date().toLocaleString() };
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
@@ -137,7 +139,6 @@ const ChatApp = () => {
       position: "top-center",
       icon: "✅",
     });
-    setCopiedResponse(response);
   };
 
   const handleShareResponse = (response) => {
@@ -188,10 +189,14 @@ const ChatApp = () => {
               }`}
             >
               {msg.user ? (
-                <p>
+                <div>
+                  <div className="flex items-center justify-between">
                   <strong>You: </strong>
-                  {msg.user}
-                </p>
+                 <p className="text-sm px-[6px] pb-1 pt-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg?.timestamp)}</p>
+                </div>
+                {msg.user}
+                <br />
+                </div>
               ) : null}
               <p>
                 <div className="message-container">
@@ -205,7 +210,7 @@ const ChatApp = () => {
                               onClick={() => handleCopyResponse(msg.bot)}
                               className="action-button copy-button"
                             >
-                              <FaCopy />
+                              <TbCopy />
                             </button>
                           </Tooltip.Trigger>
                           <Tooltip.Portal>
@@ -226,7 +231,7 @@ const ChatApp = () => {
                               onClick={() => handleShareResponse(msg.bot)}
                               className="action-button share-button"
                             >
-                              <FaShare />
+                              <TbBrandWhatsapp />
                             </button>
                           </Tooltip.Trigger>
                           <Tooltip.Portal>
