@@ -4,12 +4,14 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
-import { FaSpinner } from "react-icons/fa";
-import showdown from 'showdown';
+import { FaSpinner, FaCopy, FaShare } from "react-icons/fa";
+import showdown from "showdown";
 import "./chat.css";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import toast, { Toaster } from "react-hot-toast";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyDeBKc55K7B4fIroENBhjlNxTYX5fAecKM";
+const API_KEY = "YOUR_GOOGLE_API_KEY";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
@@ -49,6 +51,7 @@ const ChatApp = () => {
   const [conversation, setConversation] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copiedResponse, setCopiedResponse] = useState("");
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -71,7 +74,7 @@ const ChatApp = () => {
 
   const handleChatSubmission = async (message) => {
     setLoading(true);
-  
+
     try {
       const chatSession = model.startChat({
         generationConfig,
@@ -97,46 +100,144 @@ const ChatApp = () => {
           },
         ],
       });
-  
+
       const result = await chatSession.sendMessage(message);
       const response = await result.response;
-  
-      if (response.status === 'blocked') {
-        throw new Error('Response blocked due to potentially harmful content');
+
+      if (response.status === "blocked") {
+        toast.error("Unable to process request due to potentially harmful content!", {
+          position: "top-center",
+          icon: "❌",
+        });
+        throw new Error("Response blocked due to potentially harmful content");
       }
-  
+
       const text = await response.text();
-  
+
       const newMessage = { user: message, bot: text };
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
       console.error(error.message);
+      toast.error("Unable to process your request!", {
+        position: "top-center",
+        icon: "❌",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCopyResponse = (response) => {
+    navigator.clipboard.writeText(response);
+    toast.success("Response copied to clipboard!", {
+      position: "top-center",
+      icon: "📋",
+    });
+    setCopiedResponse(response);
+  };
+
+  const handleShareResponse = (response) => {
+    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      response
+    )}`;
+    window.open(shareUrl, "_blank");
+    toast.success("Response Shared via Whatsapp!", {
+      position: "top-center",
+      icon: "✅",
+    });
+    console.log(`Shared Response: ${response}`);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
-
+    if (!prompt.trim()) {
+      toast.success("Please enter a prompt!", {
+        position: "top-center",
+        icon: "✏️",
+      });
+      return
+    };
     handleChatSubmission(prompt);
     setPrompt("");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      {/* <h1 className="text-3xl md:text-5xl my-2 font-bold">Jarvis AI</h1> */}
-      <div className="w-full md:w-[70%] my-6 chat-cont overflow-y-auto  max-h-[75vh]">
+      <div className="w-full md:w-[70%] my-6 chat-cont overflow-y-auto max-h-[75vh]">
         {conversation.map((msg, index) => (
           <div
             key={index}
-            className={`bg-gray-100 text-gray-500 my-6 chat p-4 rounded-xl ${msg.user ? "items-start" : "items-end"}`}
+            className={`bg-gray-100 text-gray-500 my-6 chat p-4 rounded-xl ${
+              msg.user ? "items-start" : "items-end"
+            }`}
           >
-            {msg.user ? <p><strong>You: </strong>{msg.user}</p> : null}
-            <p><strong>Jarvis AI: </strong><div className="no-tailwindcss" dangerouslySetInnerHTML={{ __html: converter.makeHtml(msg.bot) }}></div></p>
-            <div ref={index === conversation.length - 1 ? messagesEndRef : null}></div>
+            {msg.user ? (
+              <p>
+                <strong>You: </strong>
+                {msg.user}
+              </p>
+            ) : null}
+            <p>
+              <div className="message-container">
+                <div className="flex items-center justify-between ">
+                  <strong>Jarvis AI: </strong>
+                  <div className="message-actions flex items-center justify-end gap-3 p-3">
+                    <Tooltip.Provider>
+                      <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                          <button
+                            onClick={() => handleCopyResponse(msg.bot)}
+                            className="action-button copy-button"
+                          >
+                            <FaCopy />
+                          </button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Portal>
+                          <Tooltip.Content
+                            className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
+                            sideOffset={10}
+                          >
+                            Copy Response
+                            <Tooltip.Arrow className="fill-white" />
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                    <Tooltip.Provider>
+                      <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                          <button
+                            onClick={() => handleShareResponse(msg.bot)}
+                            className="action-button share-button"
+                          >
+                            <FaShare />
+                          </button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Portal>
+                          <Tooltip.Content
+                            className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
+                            sideOffset={10}
+                          >
+                            Shate Response To Whatsapp
+                            <Tooltip.Arrow className="fill-white" />
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                  </div>
+                </div>
+                <div
+                  className="message-content"
+                  dangerouslySetInnerHTML={{
+                    __html: converter.makeHtml(msg.bot),
+                  }}
+                />
+              </div>
+            </p>
+            <div
+              ref={index === conversation.length - 1 ? messagesEndRef : null}
+            ></div>
           </div>
         ))}
       </div>
@@ -158,6 +259,7 @@ const ChatApp = () => {
           {loading ? <FaSpinner className="animate-spin" /> : "Send"}
         </button>
       </form>
+      <Toaster />
     </div>
   );
 };
