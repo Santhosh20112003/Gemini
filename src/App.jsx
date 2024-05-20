@@ -143,7 +143,11 @@ const ChatApp = () => {
 
   const handleShareResponse = (response) => {
     const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(response)}`;
-    window.open(shareUrl, "popup");
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const x = (screenWidth / 2) - (400 / 2);
+  const y = (screenHeight / 2) - (400 / 2);
+    window.open(shareUrl, "" , `width=400,height=400,left=${x},top=${y}`);
     toast.success("Response Shared via Whatsapp!", {
       position: "top-center",
       icon: "✅",
