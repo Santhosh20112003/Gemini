@@ -119,7 +119,7 @@ const ChatApp = () => {
 
       const text = await response.text();
 
-      const newMessage = { user: message, bot: text, timestamp: new Date().toLocaleString() };
+      const newMessage = { user: message, bot: text, timestamp: new Date() };
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
@@ -192,9 +192,7 @@ const ChatApp = () => {
                 <div>
                   <div className="flex items-center justify-between">
                   <strong>You: </strong>
-                  <p className="text-sm px-[6px] pb-1 pt-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
-                     {msg.timestamp ? ParseDate(msg.timestamp) : null }
-                  </p>
+                  {msg.timestamp && <p className="text-sm px-[6px] pb-1 pt-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
                 </div>
                 {msg.user}
                 <br />
