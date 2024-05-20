@@ -1,6 +1,6 @@
 {
-	"name": "Ai ChatBot", 
-	"short_name": "Jarvis", 
+	"name": "Jarvis AI", 
+	"short_name": "Ai ChatBot", 
 	"start_url": "/index.html",
 	"theme_color": "#212121",
 	"background_color": "#fff",
