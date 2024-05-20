@@ -4,6 +4,7 @@
     padding: 10px;
     border-radius: 10px;
     color: #fff;
+    white-space: pre-wrap;
 }
 
 .chat code{

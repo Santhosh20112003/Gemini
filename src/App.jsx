@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   GoogleGenerativeAI,
   HarmCategory,
@@ -49,15 +49,24 @@ const ChatApp = () => {
   const [conversation, setConversation] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const recentChats = JSON.parse(localStorage.getItem("recentChats")) || [];
     setConversation(recentChats);
   }, []);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation]);
+
   const saveRecentChats = (chats) => {
     const recentChats = chats.slice(-MAX_RECENT_CHATS);
     localStorage.setItem("recentChats", JSON.stringify(recentChats));
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleChatSubmission = async (message) => {
@@ -118,46 +127,22 @@ const ChatApp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      <h1 className="text-3xl md:text-5xl my-5 font-bold">Jarvis AI</h1>
-      <div className="w-full md:w-[70%]">
-        {conversation.length === 0 ? (
-          <div className="flex items-center justify-center gap-5 flex-col mb-12">
-            <img
-              className="rounded-md"
-              src="https://source.unsplash.com/random/250x250/?digital"
-              alt="Empty"
-            />
-            <p className="text-xl md:text-3xl font-bold">
-              How can I help you today?
-            </p>
+      {/* <h1 className="text-3xl md:text-5xl my-2 font-bold">Jarvis AI</h1> */}
+      <div className="w-full md:w-[70%] my-6  overflow-y-auto max-h-[75vh]">
+        {conversation.map((msg, index) => (
+          <div
+            key={index}
+            className={`bg-gray-100 text-gray-500 my-6 chat p-4 rounded-xl ${msg.user ? "items-start" : "items-end"}`}
+          >
+            {msg.user ? <p><strong>You: </strong>{msg.user}</p> : null}
+            <p><strong>Jarvis AI: </strong><div className="no-tailwindcss" dangerouslySetInnerHTML={{ __html: converter.makeHtml(msg.bot) }}></div></p>
+            <div ref={index === conversation.length - 1 ? messagesEndRef : null}></div>
           </div>
-        ) : (
-          <div className="flex flex-col gap-5 mb-5 overflow-y-auto max-h-[70vh]">
-            {conversation.map((msg, index) => (
-              <div
-                key={index}
-                className={`bg-gray-100 text-gray-500  chat p-4 rounded-xl ${
-                  msg.user ? "items-start" : "items-end"
-                }`}
-              >
-                {msg.user ? (
-                  <p>
-                    <strong>You: </strong>
-                    {msg.user}
-                  </p>
-                ) : null}
-                <p>
-                  <strong>Jarvis AI: </strong>
-                  <div className="no-tailwindcss" dangerouslySetInnerHTML={{ __html: converter.makeHtml(msg.bot) }}></div>
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+        ))}
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 flex items-center justify-between p-3 mb-10 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 flex items-center justify-between p-3 rounded-full bg-white space-x-2"
       >
         <input
           value={prompt}
