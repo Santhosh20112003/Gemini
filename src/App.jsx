@@ -11,7 +11,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 
 const converter = new showdown.Converter();
-const API_KEY = "YOUR_GOOGLE_API_KEY";
+const API_KEY = "AIzaSyDeBKc55K7B4fIroENBhjlNxTYX5fAecKM";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
