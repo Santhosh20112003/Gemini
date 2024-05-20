@@ -177,7 +177,7 @@ const ChatApp = () => {
               alt="Empty"
             />
             <p className="md:text-3xl text-xl text-white font-bold">
-              I'm Jarvis, How can I help you today?
+              Hello I'm Jarvis, How can I help you today?
             </p>
           </div>
         ) : (
