@@ -5,8 +5,11 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { FaSpinner } from "react-icons/fa";
+import showdown from 'showdown';
+import "./chat.css";
 
-const API_KEY = "AIzaSyAa_SXygpJyB5XUVPbEuUcrDJLyg1YgsTo";
+const converter = new showdown.Converter();
+const API_KEY = "AIzaSyDeBKc55K7B4fIroENBhjlNxTYX5fAecKM";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
@@ -59,7 +62,7 @@ const ChatApp = () => {
 
   const handleChatSubmission = async (message) => {
     setLoading(true);
-
+  
     try {
       const chatSession = model.startChat({
         generationConfig,
@@ -85,66 +88,24 @@ const ChatApp = () => {
           },
         ],
       });
-
+  
       const result = await chatSession.sendMessage(message);
       const response = await result.response;
+  
+      if (response.status === 'blocked') {
+        throw new Error('Response blocked due to potentially harmful content');
+      }
+  
       const text = await response.text();
-
+  
       const newMessage = { user: message, bot: text };
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatResponse = (text) => {
-    const delimiters = ["***", "```","``","`", "-", "**", "*"];
-
-    let splitText = [text];
-    delimiters.forEach((delimiter) => {
-      splitText = splitText.flatMap((line) => line.split(delimiter));
-    });
-
-    return splitText.map((line, index) => {
-      console.log(line);
-      if (line.trim().startsWith("*")) {
-        console.log(`Heading : ${line}`);
-        return <p key={index}>{line.replace(/\*/g, "")}</p>;
-      }
-
-      if (line.trim().startsWith("```") && line.trim().endsWith("```")) {
-        console.log(`COde1 : ${line}`);
-        return (
-          <pre key={index} className="bg-black text-white rounded-lg p-2">
-            {line.replace(/```/g, "")}
-          </pre>
-        );
-      }
-      if (line.trim().startsWith("``") && line.trim().endsWith("``")) {
-        console.log(`Code2 : ${line}`);
-        return (
-          <pre key={index} className="bg-black text-white rounded-lg p-2">
-            {line.replace(/``/g, "")}
-          </pre>
-        );
-      }
-      if (line.trim().startsWith("`") && line.trim().endsWith("`")) {
-        console.log(`Code3 : ${line}`);
-        return (
-          <pre key={index} className="bg-black text-white rounded-lg p-2">
-            {line.replace(/`/g, "")}
-          </pre>
-        );
-      }
-      if (line == "") {
-        return <br />;
-      }
-      console.log(`Paragraph : ${line}`);
-      return <p key={index}>{line}</p>;
-    });
   };
 
   const handleFormSubmit = (e) => {
@@ -175,7 +136,7 @@ const ChatApp = () => {
             {conversation.map((msg, index) => (
               <div
                 key={index}
-                className={`bg-gray-100 text-gray-500 p-4 rounded-xl ${
+                className={`bg-gray-100 text-gray-500  chat p-4 rounded-xl ${
                   msg.user ? "items-start" : "items-end"
                 }`}
               >
@@ -187,7 +148,7 @@ const ChatApp = () => {
                 ) : null}
                 <p>
                   <strong>Jarvis AI: </strong>
-                  {formatResponse(msg.bot)}
+                  <div className="no-tailwindcss" dangerouslySetInnerHTML={{ __html: converter.makeHtml(msg.bot) }}></div>
                 </p>
               </div>
             ))}
