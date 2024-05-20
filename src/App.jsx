@@ -142,15 +142,12 @@ const ChatApp = () => {
   };
 
   const handleShareResponse = (response) => {
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      response
-    )}`;
-    window.open(shareUrl, "_blank");
+    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(response)}`;
+    window.open(shareUrl, "popup");
     toast.success("Response Shared via Whatsapp!", {
       position: "top-center",
       icon: "✅",
     });
-    console.log(`Shared Response: ${response}`);
   };
 
   const handleFormSubmit = (e) => {
