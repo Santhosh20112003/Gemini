@@ -105,10 +105,13 @@ const ChatApp = () => {
       const response = await result.response;
 
       if (response.status === "blocked") {
-        toast.error("Unable to process request due to potentially harmful content!", {
-          position: "top-center",
-          icon: "❌",
-        });
+        toast.error(
+          "Unable to process request due to potentially harmful content!",
+          {
+            position: "top-center",
+            icon: "❌",
+          }
+        );
         throw new Error("Response blocked due to potentially harmful content");
       }
 
@@ -132,7 +135,7 @@ const ChatApp = () => {
     navigator.clipboard.writeText(response);
     toast.success("Response copied to clipboard!", {
       position: "top-center",
-      icon: "📋",
+      icon: "✅",
     });
     setCopiedResponse(response);
   };
@@ -156,8 +159,8 @@ const ChatApp = () => {
         position: "top-center",
         icon: "✏️",
       });
-      return
-    };
+      return;
+    }
     handleChatSubmission(prompt);
     setPrompt("");
   };
@@ -165,85 +168,98 @@ const ChatApp = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
       <div className="w-full md:w-[70%] my-6 chat-cont overflow-y-auto max-h-[75vh]">
-        {conversation.map((msg, index) => (
-          <div
-            key={index}
-            className={`bg-gray-100 text-gray-500 my-6 chat p-4 rounded-xl ${
-              msg.user ? "items-start" : "items-end"
-            }`}
-          >
-            {msg.user ? (
-              <p>
-                <strong>You: </strong>
-                {msg.user}
-              </p>
-            ) : null}
-            <p>
-              <div className="message-container">
-                <div className="flex items-center justify-between ">
-                  <strong>Jarvis AI: </strong>
-                  <div className="message-actions flex items-center justify-end gap-3 p-3">
-                    <Tooltip.Provider>
-                      <Tooltip.Root>
-                        <Tooltip.Trigger asChild>
-                          <button
-                            onClick={() => handleCopyResponse(msg.bot)}
-                            className="action-button copy-button"
-                          >
-                            <FaCopy />
-                          </button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Portal>
-                          <Tooltip.Content
-                            className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
-                            sideOffset={10}
-                          >
-                            Copy Response
-                            <Tooltip.Arrow className="fill-white" />
-                          </Tooltip.Content>
-                        </Tooltip.Portal>
-                      </Tooltip.Root>
-                    </Tooltip.Provider>
-                    <Tooltip.Provider>
-                      <Tooltip.Root>
-                        <Tooltip.Trigger asChild>
-                          <button
-                            onClick={() => handleShareResponse(msg.bot)}
-                            className="action-button share-button"
-                          >
-                            <FaShare />
-                          </button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Portal>
-                          <Tooltip.Content
-                            className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
-                            sideOffset={10}
-                          >
-                            Shate Response To Whatsapp
-                            <Tooltip.Arrow className="fill-white" />
-                          </Tooltip.Content>
-                        </Tooltip.Portal>
-                      </Tooltip.Root>
-                    </Tooltip.Provider>
-                  </div>
-                </div>
-                <div
-                  className="message-content"
-                  dangerouslySetInnerHTML={{
-                    __html: converter.makeHtml(msg.bot),
-                  }}
-                />
-              </div>
+        {conversation.length === 0 ? (
+          <div className="flex items-center mb-10 justify-center gap-5 flex-col">
+            <img
+              className="rounded-md bg-gray-300 shadow-sm"
+              src="https://source.unsplash.com/random/250x250/?digital image"
+              alt="Empty"
+            />
+            <p className="md:text-3xl text-xl text-white font-bold">
+              I'm Jarvis, How can I help you today?
             </p>
-            <div
-              ref={index === conversation.length - 1 ? messagesEndRef : null}
-            ></div>
           </div>
-        ))}
+        ) : (
+          conversation.map((msg, index) => (
+            <div
+              key={index}
+              className={`bg-gray-100 text-gray-500 my-6  chat p-4 rounded-xl ${
+                msg.user ? "items-start" : "items-end"
+              }`}
+            >
+              {msg.user ? (
+                <p>
+                  <strong>You: </strong>
+                  {msg.user}
+                </p>
+              ) : null}
+              <p>
+                <div className="message-container">
+                  <div className="flex items-center justify-between ">
+                    <strong>Jarvis AI: </strong>
+                    <div className="message-actions flex items-center justify-end gap-3 p-3">
+                      <Tooltip.Provider>
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild>
+                            <button
+                              onClick={() => handleCopyResponse(msg.bot)}
+                              className="action-button copy-button"
+                            >
+                              <FaCopy />
+                            </button>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
+                              sideOffset={10}
+                            >
+                              Copy Response
+                              <Tooltip.Arrow className="fill-white" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                        </Tooltip.Root>
+                      </Tooltip.Provider>
+                      <Tooltip.Provider>
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild>
+                            <button
+                              onClick={() => handleShareResponse(msg.bot)}
+                              className="action-button share-button"
+                            >
+                              <FaShare />
+                            </button>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
+                              sideOffset={10}
+                            >
+                              Shate Response To Whatsapp
+                              <Tooltip.Arrow className="fill-white" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                        </Tooltip.Root>
+                      </Tooltip.Provider>
+                    </div>
+                  </div>
+                  <div
+                    className="message-content"
+                    dangerouslySetInnerHTML={{
+                      __html: converter.makeHtml(msg.bot),
+                    }}
+                  />
+                </div>
+              </p>
+              <div
+                ref={index === conversation.length - 1 ? messagesEndRef : null}
+              ></div>
+            </div>
+          ))
+        )}
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 flex items-center justify-between p-3 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 flex items-center mb-4 justify-between p-3 rounded-full bg-white space-x-2"
       >
         <input
           value={prompt}
