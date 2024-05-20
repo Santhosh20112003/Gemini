@@ -128,7 +128,7 @@ const ChatApp = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
       {/* <h1 className="text-3xl md:text-5xl my-2 font-bold">Jarvis AI</h1> */}
-      <div className="w-full md:w-[70%] my-6  overflow-y-auto max-h-[75vh]">
+      <div className="w-full md:w-[70%] my-6 chat-cont overflow-y-auto  max-h-[75vh]">
         {conversation.map((msg, index) => (
           <div
             key={index}

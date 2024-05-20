@@ -4,9 +4,10 @@
 
 *{
     font-family: "Poppins", sans-serif;
+    scroll-behavior: smooth;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 8px;
 }
 
@@ -19,7 +20,32 @@
 ::-webkit-scrollbar-thumb {
   background-color: white;
   border-radius: 10px ;
-} 
+  margin: 0 10px;
+}  */
+
+
+::-webkit-scrollbar-track
+{
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+	--tw-gradient-from: #60a5fa var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(96 165 250 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+::-webkit-scrollbar
+{
+	width: 15px;
+	background-color: #4188f5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #fff;
+  width: 15px;
+	border-radius: 10px;
+}
+
 
 @media only screen and (max-width: 768px) {
     .crisp-client {

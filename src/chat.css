@@ -20,6 +20,11 @@
     
 }
 
+.chat-cont{
+    -webkit-overflow-scrolling: touch;
+    padding: 10px;
+}
+
 .chat{
     overflow-wrap: break-word;
 }
