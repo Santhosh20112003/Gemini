@@ -193,7 +193,7 @@ const ChatApp = () => {
                   <div className="flex items-center justify-between">
                   <strong>You: </strong>
                   <p className="text-sm px-[6px] pb-1 pt-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
-                     {msg.timestamp ? ParseDate(msg.timestamp) : ""}
+                     {msg.timestamp ? ParseDate(msg.timestamp) : null }
                   </p>
                 </div>
                 {msg.user}
