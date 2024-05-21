@@ -3,7 +3,7 @@
 	"short_name": "Jarvis", 
 	"start_url": "/index.html",
 	"theme_color": "#212121",
-	"background_color": "#fff",
+	"background_color": "#8ad8ff",
 	"display": "standalone",
 	"icons":[
 	  {
