@@ -14,7 +14,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyDeBKc55K7B4fIroENBhjlNxTYX5fAecKM";
+const API_KEY = "AIzaSyAYQ7lif2N0XNiF27sEbZxbAfh5t6n8Aq0";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
@@ -108,7 +108,7 @@ const ChatApp = () => {
 
       if (response.status === "blocked") {
         toast.error(
-          "Unable to process request due to potentially harmful content!",
+          `Unable to process request due to potentially harmful content!`,
           {
             position: "top-center",
             icon: "❌",
@@ -124,7 +124,7 @@ const ChatApp = () => {
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
       console.error(error.message);
-      toast.error("Unable to process your request!", {
+      toast.error(`Unable to process your request! ${error.message}`, {
         position: "top-center",
         icon: "❌",
       });
