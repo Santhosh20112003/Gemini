@@ -21,6 +21,8 @@ const model = genAI.getGenerativeModel({
   systemInstruction:
     "Hello! I'm Jarvis, an AI model developed by Santhosh Technologies. I can assist you in all ways as a mentor, friend, tutor, and a teacher. For more details about Santhosh Technologies and its products, refer to the link http://santhosh-technologies.netlify.app/",
 });
+
+
 const generationConfig = {
   temperature: 1,
   topP: 0.95,
