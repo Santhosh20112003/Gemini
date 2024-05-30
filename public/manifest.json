@@ -1,27 +1,26 @@
 {
-	"name": "Jarvis AI", 
-	"short_name": "Jarvis", 
+	"name": "Jarvis AI",
+	"short_name": "Jarvis",
 	"start_url": "/index.html",
 	"theme_color": "#212121",
 	"background_color": "#3e85f6",
 	"display": "standalone",
-	"icons":[
-	  {
-		"src":"Jarvis.png",
-		"sizes": "192x192",
-		"type": "image/png"
-	  },
-	  {
-		"src":"Jarvis.png",
-		"sizes": "512x512",
-		"type": "image/png"
-	  },
-	  {
-		"src":"Jarvis-mask.png",
-		"type": "image/png",
-		"sizes": "192x192",
-		"purpose":"any maskable"
-	  }
+	"icons": [
+		{
+			"src": "Jarvis.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "Jarvis.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "Jarvis-mask.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "any maskable"
+		}
 	]
-  
-  }
+}
