@@ -69,7 +69,7 @@ const Jarvis2 = () => {
       "Chats are stored locally with the last 5 chats preserved.",
       { 
         position:"top-right",
-        duration: 5000,
+        duration: 3000,
         icon: "🥷",
       }
     );
@@ -183,7 +183,7 @@ const Jarvis2 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      <div className="w-full sticky top-0 flex items-center justify-center pt-6 pb-3">
+      <div className="w-full fixed top-0 flex items-center justify-center pt-6 pb-3">
         <span className="flex items-center justify-center gap-3 p-1">
         <Link className={` rounded-full px-5 py-2 border-2 border-transparent text-white font-semibold`} to={"/version1.0"} >Jarvis 1.0</Link>
         <Link className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/version2.0"} >Jarvis 2.0</Link>
