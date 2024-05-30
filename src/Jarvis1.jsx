@@ -35,7 +35,7 @@ function Jarvis1() {
         </span>
       </div>
       <iframe
-        ref={zapier}
+
         src="https://interfaces.zapier.com/embed/page/clm82fbnw473250ol9ocu5ap97?noBackground=true"
         className="w-full md:pt-12 h-screen "
       ></iframe>
