@@ -1,25 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-*{
-    font-family: "Poppins", sans-serif;
-    scroll-behavior: smooth;
-}
-
-
-@media only screen and (max-width: 768px) {
-    .crisp-client {
-      display: none;
-    }
-  }
-
-  .go3958317564{
-    font-size: 0.8rem;
-  }
-
-
-  ::-webkit-scrollbar-track
+::-webkit-scrollbar-track
 {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
@@ -31,12 +10,12 @@
 ::-webkit-scrollbar
 {
 	width: 15px;
-	background-color: #4188f5;
+	background-color: #fff;
 }
 
 ::-webkit-scrollbar-thumb
 {
 	background-color: #fff;
   width: 12px;
-	border-radius: 10px;
+	border-radius: 5px;
 }
