@@ -7,7 +7,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/version2.0" />} />
+        <Route path="" index element={<Navigate to="/version2.0" />} />
         <Route path="/version1.0" element={<Jarvis1 />} />
         <Route path="/version2.0" element={<Jarvis2 />} />
       </Routes>
