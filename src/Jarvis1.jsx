@@ -39,7 +39,7 @@ function Jarvis1() {
       <iframe
         ref={zapier}
         src="https://interfaces.zapier.com/embed/page/clm82fbnw473250ol9ocu5ap97?noBackground=true"
-        className="w-full md:pt-12 h-screen md:h-[90vh]"
+        className="w-full md:pt-12 h-screen "
       ></iframe>
 
       <div className="md:w-[20%] md:h-32 md:fixed bottom-0 right-5 bg-gradient-to-b from-[#458bf7] to-blue-500"></div>
