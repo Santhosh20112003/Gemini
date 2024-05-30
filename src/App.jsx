@@ -7,9 +7,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="" element={<Jarvis2 />} />
-        <Route path="version1.0" element={<Jarvis1 />} />
-        <Route path="version2.0" element={<Jarvis2 />} />
+        <Route path="" element={<Navigate to="v2" />} />
+        <Route path="v1" element={<Jarvis1 />} />
+        <Route path="v2" element={<Jarvis2 />} />
       </Routes>
     </BrowserRouter>
   );

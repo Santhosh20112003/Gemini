@@ -24,13 +24,13 @@ function Jarvis1() {
         <span className="flex items-center justify-center gap-3 p-1">
           <Link
             className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`}
-            to={"/version1.0"}
+            to={"/v1"}
           >
             Jarvis 1.0
           </Link>
           <Link
             className={` rounded-full px-5 py-2 border-2 border-transparent text-white font-semibold`}
-            to={"/version2.0"}
+            to={"/v2"}
           >
             Jarvis 2.0
           </Link>
