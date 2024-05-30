@@ -8,10 +8,10 @@ function Home() {
 
   useEffect(() => {
     const currentVersion = localStorage.getItem("current_version");
-    if (currentVersion === "2.0") {
-      navigate('/version2.0');
-    } else {
+    if (currentVersion === "1.0") {
       navigate('/version1.0');
+    } else {
+      navigate('/version2.0');
     }
   }, [navigate]);
 
