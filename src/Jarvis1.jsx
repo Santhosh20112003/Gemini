@@ -20,7 +20,7 @@ function Jarvis1() {
 
   return (
     <div className="bg-gradient-to-b from-blue-400 to-blue-500">
-      <div className="w-full flex items-center justify-center pt-6 pb-3">
+      <div className="w-full sticky top-0 flex items-center justify-center pt-6 pb-3">
         <span className="flex items-center justify-center gap-3 p-1">
           <Link
             className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`}
