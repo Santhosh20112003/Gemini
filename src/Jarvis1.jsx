@@ -7,7 +7,7 @@ function Jarvis1() {
   const zapier = useRef(null);
 
   useEffect(() => {
-    window.localStorage.setItem("current_version", "1.0");
+    // window.localStorage.setItem("current_version", "1.0");
     toast.success(
       "Unlike Jarvis 2.0, chats aren't saved locally. Keep in mind.",
       { 
