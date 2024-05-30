@@ -1,7 +1,7 @@
 {
 	"name": "Jarvis AI",
 	"short_name": "Jarvis",
-	"start_url": "/index.html",
+	"start_url": ".",
 	"theme_color": "#212121",
 	"background_color": "#3e85f6",
 	"display": "standalone",
@@ -19,8 +19,7 @@
 		{
 			"src": "Jarvis-mask.png",
 			"type": "image/png",
-			"sizes": "192x192",
-			"purpose": "any maskable"
+			"sizes": "192x192"
 		}
 	]
 }
