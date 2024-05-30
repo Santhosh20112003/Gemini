@@ -64,7 +64,6 @@ const Jarvis2 = () => {
   }, []);
 
   useEffect(() => {
-    // window.localStorage.setItem("current_version","2.0");
     toast.success(
       "Chats are stored locally with the last 5 chats preserved.",
       { 
