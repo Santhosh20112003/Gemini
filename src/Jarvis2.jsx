@@ -65,6 +65,7 @@ const Jarvis2 = () => {
 
   useEffect(() => {
     localStorage.setItem("current_version","2.0");
+    toast.remove();
     toast.success(
       "Chats are stored locally with the last 5 chats preserved.",
       { 
@@ -183,13 +184,13 @@ const Jarvis2 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      <div className="w-full top-0  flex items-center justify-center pt-6 pb-3 ">
-        <span className="flex items-center justify-center gap-3 p-1">
+      <div className="w-full top-0 fixed flex items-center justify-center ">
+        <span className="flex items-center justify-center gap-3 p-3 pt-5">
         <Link className={` rounded-full px-5 py-2 border-2 border-transparent text-white font-semibold`} to={"/v1"} >Jarvis 1.0</Link>
         <Link className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/v2"} >Jarvis 2.0</Link>
         </span>
       </div>
-      <div className="w-full md:w-[70%] mb-6 chat-cont overflow-y-auto max-h-[75vh]">
+      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
             <img
@@ -285,10 +286,11 @@ const Jarvis2 = () => {
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 flex items-center mb-4 justify-between p-3 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 flex h-[10vh] mt-2 items-center  justify-between p-3 rounded-full bg-white space-x-2"
       >
         <input
           value={prompt}
+          autoFocus
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter a prompt here..."
           className="p-2 rounded-sm hover:outline-none bg-transparent focus:outline-none hover:ring-0 w-full text-black"
