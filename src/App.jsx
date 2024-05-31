@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Jarvis1 from './Jarvis1';
 import Jarvis2 from './Jarvis2';
+import Game from "./Game";
 
 function Home() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function App() {
         <Route path="" element={<Home />} />
         <Route path="/v1" element={<Jarvis1 />} />
         <Route path="/v2" element={<Jarvis2 />} />
+        <Route path="/game" element={<Game />} />
       </Routes>
     </BrowserRouter>
   );

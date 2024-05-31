@@ -7,6 +7,7 @@ import {
 import { TbBrandWhatsapp } from "react-icons/tb";
 import { TbCopy } from "react-icons/tb";
 import { FaSpinner } from "react-icons/fa";
+import Game from "./Game"
 import showdown from "showdown";
 import "./chat.css";
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -193,10 +194,8 @@ const Jarvis2 = () => {
       <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
-            <img
+            <Game
               className="rounded-md bg-gray-300 shadow-sm"
-              src="https://source.unsplash.com/random/250x250/?digital image"
-              alt="Empty"
             />
             <p className="md:text-3xl text-xl text-white font-bold">
               Hello I'm Jarvis, How can I help you today?
