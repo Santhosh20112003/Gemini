@@ -5,8 +5,9 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { TbBrandWhatsapp } from "react-icons/tb";
+import { IoArrowUpCircle } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
-import { FaSpinner } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
 import Game from "./Game"
 import showdown from "showdown";
 import "./chat.css";
@@ -140,7 +141,7 @@ const Jarvis2 = () => {
       saveRecentChats([...conversation, newMessage]);
     } catch (error) {
       console.error(error.message);
-      toast.error(`Unable to process your request! ${error.message}`, {
+      toast.error(`Unable to process your request! `, {
         position: "top-center",
         icon: "❌",
       });
@@ -205,9 +206,7 @@ const Jarvis2 = () => {
           conversation.map((msg, index) => (
             <div
               key={index}
-              className={`bg-gray-100 text-gray-500 my-6  chat p-4 rounded-xl ${
-                msg.user ? "items-start" : "items-end"
-              }`}
+              className={`bg-gray-100 text-gray-600 my-6  chat p-4 rounded-xl ${msg.user ? "items-start" : "items-end"}`}
             >
               {msg.user ? (
                 <div>
@@ -269,7 +268,7 @@ const Jarvis2 = () => {
                     </div>
                   </div>
                   <div
-                    className="message-content"
+                    className="message-content "
                     dangerouslySetInnerHTML={{
                       __html: converter.makeHtml(msg.bot),
                     }}
@@ -285,7 +284,7 @@ const Jarvis2 = () => {
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 flex h-[10vh] mt-2 items-center  justify-between p-3 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 max-h-[100px]  flex mt-2 items-center  justify-between p-3 rounded-full bg-white space-x-2"
       >
         <input
           value={prompt}
@@ -296,10 +295,11 @@ const Jarvis2 = () => {
         />
         <button
           type="submit"
-          className="text-blue-500 focus:outline-none font-bold py-2 px-3 rounded-full"
+          className="focus:outline-none font-bold py-1 px-2 text-4xl rounded-full"
+          title="send"
           disabled={loading}
         >
-          {loading ? <FaSpinner className="animate-spin" /> : "Send"}
+          {loading ? <FaGear className="animate-spin p-[0.5rem] text-gray-400" /> : <IoArrowUpCircle  className={` ${prompt.length < 1 ? "text-gray-300":"text-blue-500 rotate-90"} transition-all duration-100 ease-linear`} />}
         </button>
       </form>
       <Toaster />

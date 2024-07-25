@@ -1,23 +1,24 @@
 .chat pre{
-    margin: 5px 0;
-    background: #000;
+    margin: 12px 0;
+    background: #212121;
     padding: 10px;
     border-radius: 10px;
     color: #fff;
     white-space: pre-wrap;
+    border: 2px solid white;
+    outline: 2px solid #212121;
 }
 
 .chat code{
-    background: #3e3e3e;
+    background: #212121;
     padding: 5px;
     border-radius: 10px;
     color: #fff;
-    margin: 30px 0;
+
 }
 
 .no-tailwindcss {
     all: unset !important;
-    
 }
 
 .chat-cont{
@@ -27,18 +28,23 @@
 
 .chat{
     overflow-wrap: break-word;
+    font-size: 0.9rem;
 }
 
 .chat pre code{
-    background: #000;
+    background: #212121;
     padding: 5px;
     border-radius: 10px;
     margin: 3px 0;
 }
+.chat pre ::selection{
+    background-color: #fff;
+    color: #212121;
+}
 
 .chat ol, ul, menu {
     display: block;
-    list-style-type: disc;
+    list-style-type: square;
     margin-block-start: 1em;
     margin-block-end: 1em;
     margin-inline-start: 0px;
@@ -52,3 +58,9 @@
     margin-bottom: 1em;
     text-align: -webkit-match-parent
 }
+
+.cc-1si9v{
+    opacity: 0 !important;
+    display: none !important;
+    transform: scale(0) !important;
+  }

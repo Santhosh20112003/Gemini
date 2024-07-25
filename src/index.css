@@ -40,3 +40,7 @@
   width: 12px;
 	border-radius: 10px;
 }
+
+.chat-cont{
+  mask-image: linear-gradient(to bottom, white, white, white, white, white,white,white, transparent) !important;
+}
