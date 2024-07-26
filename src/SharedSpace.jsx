@@ -1,63 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
 import { TbBrandWhatsapp } from "react-icons/tb";
-import { IoArrowUpCircle } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
-import { FaGear } from "react-icons/fa6";
 import Game from "./Game"
 import showdown from "showdown";
 import "./chat.css";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
-import { Link } from "react-router-dom";
 import "./avoid.css";
+import { Link } from "react-router-dom";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyAYQ7lif2N0XNiF27sEbZxbAfh5t6n8Aq0";
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction:
-    "Hello! I'm Jarvis, an AI model developed by Santhosh Technologies. I can assist you in all ways as a mentor, friend, tutor, and a teacher. For more details about Santhosh Technologies and its products, refer to the link http://santhosh-technologies.netlify.app/",
-});
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
 
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-];
-
-const MAX_RECENT_CHATS = 5;
-
-const Jarvis2 = () => {
+const SharedSpace = () => {
   const [conversation, setConversation] = useState([]);
-  const [prompt, setPrompt] = useState("");
-  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -66,88 +22,11 @@ const Jarvis2 = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("current_version","2.0");
-    toast.remove();
-    toast.success(
-      "Chats are stored locally with the last 5 chats preserved.",
-      { 
-        position:"top-right",
-        duration: 3000,
-        icon: "🥷",
-      }
-    );
-  }, []);
-
-  useEffect(() => {
     scrollToBottom();
   }, [conversation]);
 
-  const saveRecentChats = (chats) => {
-    const recentChats = chats.slice(-MAX_RECENT_CHATS);
-    localStorage.setItem("recentChats", JSON.stringify(recentChats));
-  };
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleChatSubmission = async (message) => {
-    setLoading(true);
-
-    try {
-      const chatSession = model.startChat({
-        generationConfig,
-        safetySettings,
-        history: [
-          { role: "user", parts: [{ text: "hello" }] },
-          {
-            role: "model",
-            parts: [
-              {
-                text: "Hello! 👋 What can I do for you today? 😊 I'm ready to help in any way I can, whether you need a friend to chat with, a mentor to guide you, or a teacher to explain something.",
-              },
-            ],
-          },
-          { role: "user", parts: [{ text: "what is your name" }] },
-          {
-            role: "model",
-            parts: [
-              {
-                text: "You can call me Jarvis! 😊 I'm an AI model, so I don't have a physical name like a person. But \"Jarvis\" is my code name, and it's what I respond to! What's your name? 😄",
-              },
-            ],
-          },
-        ],
-      });
-
-      const result = await chatSession.sendMessage(message);
-      const response = await result.response;
-
-      if (response.status === "blocked") {
-        toast.error(
-          `Unable to process request due to potentially harmful content!`,
-          {
-            position: "top-center",
-            icon: "❌",
-          }
-        );
-        throw new Error("Response blocked due to potentially harmful content");
-      }
-
-      const text = await response.text();
-
-      const newMessage = { user: message, bot: text, timestamp: new Date() };
-      setConversation((prev) => [...prev, newMessage]);
-      saveRecentChats([...conversation, newMessage]);
-    } catch (error) {
-      console.error(error.message);
-      toast.error(`Unable to process your request! `, {
-        position: "top-center",
-        icon: "❌",
-      });
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleCopyResponse = (response) => {
@@ -171,28 +50,10 @@ const Jarvis2 = () => {
     });
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (!prompt.trim()) {
-      toast.success("Please enter a prompt!", {
-        position: "top-center",
-        icon: "✏️",
-      });
-      return;
-    }
-    handleChatSubmission(prompt);
-    setPrompt("");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      <div className="w-full top-0 fixed z-[10000] flex items-center justify-center ">
-        <span className="flex items-center justify-center gap-3 p-3 pt-5">
-        <Link className={` rounded-full px-5 py-2 border-2 border-transparent text-white font-semibold`} to={"/v1"} >Jarvis 1.0</Link>
-        <Link className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/v2"} >Jarvis 2.0</Link>
-        </span>
-      </div>
-      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
+     
+      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[80vh]">
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
             <Game
@@ -275,36 +136,19 @@ const Jarvis2 = () => {
                   />
                 </div>
               </p>
-              <div
-                ref={index === conversation.length - 1 ? messagesEndRef : null}
-              ></div>
+              
             </div>
           ))
         )}
       </div>
-      <form
-        onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 max-h-[100px]  flex mt-2 items-center  justify-between p-3 rounded-full bg-white space-x-2"
-      >
-        <input
-          value={prompt}
-          autoFocus
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Enter a prompt here..."
-          className="p-2 rounded-sm hover:outline-none bg-transparent focus:outline-none hover:ring-0 w-full text-black"
-        />
-        <button
-          type="submit"
-          className="focus:outline-none font-bold py-1 px-2 text-4xl rounded-full"
-          title="send"
-          disabled={loading}
-        >
-          {loading ? <FaGear className="animate-spin p-[0.5rem] text-gray-400" /> : <IoArrowUpCircle  className={` ${prompt.length < 1 ? "text-gray-300":"text-blue-500 rotate-90"} transition-all duration-100 ease-linear`} />}
-        </button>
-      </form>
+      <div className="w-full flex items-center justify-center ">
+        <span className="flex items-center justify-center gap-3 p-3 pt-5">
+        <p className="bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold">Shared conversation</p>
+        </span>
+      </div>
       <Toaster />
     </div>
   );
 };
 
-export default Jarvis2;
+export default SharedSpace;
