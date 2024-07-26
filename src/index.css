@@ -31,7 +31,7 @@
 ::-webkit-scrollbar
 {
 	width: 15px;
-	background-color: #4188f5;
+	/* background-color: #4188f5; */
 }
 
 ::-webkit-scrollbar-thumb

@@ -206,22 +206,29 @@ const Jarvis2 = () => {
           conversation.map((msg, index) => (
             <div
               key={index}
-              className={`bg-gray-100 text-gray-600 my-6  chat p-4 rounded-xl ${msg.user ? "items-start" : "items-end"}`}
+              className={` text-gray-600 my-5 chat space-y-3`}
             >
               {msg.user ? (
-                <div>
+                <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
                   <div className="flex items-center justify-between pb-2">
                   <strong>You: </strong>
-                  {msg.timestamp && <p className="text-sm px-[6px] py-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
+                  {msg.timestamp && <p className="text-sm px-[6px] py-[6px]  bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
                 </div>
                 {msg.user}
                 <br />
                 </div>
               ) : null}
-              <p>
+              <p className="bg-gray-100 p-4 me-5 md:me-10 rounded-xl">
                 <div className="message-container">
                   <div className="flex items-center justify-between ">
-                    <strong>Jarvis AI: </strong>
+                  <span className="inline-flex items-center justify-center gap-2">
+                    <img
+                      src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
+                      alt="jarvis"
+                      className="w-6 h-6 rounded-full p-1 bg-[#0d2551]"
+                    />
+                    <strong className="text-lg">Jarvis AI</strong>
+                    </span>
                     <div className="message-actions flex items-center justify-end gap-3 p-3">
                       <Tooltip.Provider>
                         <Tooltip.Root>

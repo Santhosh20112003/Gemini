@@ -27,7 +27,7 @@ function App() {
         <Route path="" element={<Home />} />
         <Route path="/v1" element={<Jarvis1 />} />
         <Route path="/v2" element={<Jarvis2 />} />
-        {/* <Route path="/v2/share/:chats" element={<SharedSpace />} /> */}
+        <Route path="/v2/share/:chats" element={<SharedSpace />} />
         <Route path="/game" element={<Game />} />
       </Routes>
     </BrowserRouter>

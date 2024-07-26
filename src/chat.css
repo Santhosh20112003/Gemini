@@ -44,7 +44,7 @@
 
 .chat ol, ul, menu {
     display: block;
-    list-style-type: square;
+    list-style-type: none;
     margin-block-start: 1em;
     margin-block-end: 1em;
     margin-inline-start: 0px;
@@ -54,10 +54,12 @@
 }
 
 .chat li {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 0.6em;
+    list-style-type: square;
+    margin-bottom: 0.6em;
     text-align: -webkit-match-parent
 }
+
 
 .cc-1si9v{
     opacity: 0 !important;
