@@ -185,11 +185,11 @@ const Jarvis2 = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-5">
-      <div className="w-full top-0 fixed z-[10000] flex items-center justify-center ">
+    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-3 sm:p-5">
+      <div className="w-full top-0 fixed z-[1000] pb-2 md:pb-5 flex items-center justify-center">
         <span className="flex items-center justify-center gap-3 p-3 pt-5">
-        <Link className={` rounded-full px-5 py-2 border-2 border-transparent text-white font-semibold`} to={"/v1"} >Jarvis 1.0</Link>
-        <Link className={`bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/v2"} >Jarvis 2.0</Link>
+        <Link className={` rounded-full px-3 py-1 md:px-5 md:py-2 border-2 text-sm sm:text-base border-transparent text-white font-semibold`} to={"/v1"} >Jarvis 1.0</Link>
+        <Link className={`bg-white rounded-full px-3 py-1 md:px-5 md:py-2 text-sm sm:text-base border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/v2"} >Jarvis 2.0</Link>
         </span>
       </div>
       <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
@@ -268,7 +268,7 @@ const Jarvis2 = () => {
                     </div>
                   </div>
                   <div
-                    className="message-content "
+                    className="message-content"
                     dangerouslySetInnerHTML={{
                       __html: converter.makeHtml(msg.bot),
                     }}
@@ -284,7 +284,7 @@ const Jarvis2 = () => {
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 max-h-[100px]  flex mt-2 items-center  justify-between p-3 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 max-h-[50px] sm:max-h-[60px] md:max-h-[60px]  flex mt-2 items-center justify-between p-2 rounded-full bg-white space-x-2"
       >
         <input
           value={prompt}
@@ -295,7 +295,7 @@ const Jarvis2 = () => {
         />
         <button
           type="submit"
-          className="focus:outline-none font-bold py-1 px-2 text-4xl rounded-full"
+          className="focus:outline-none font-bold p-1 text-4xl rounded-full"
           title="send"
           disabled={loading}
         >

@@ -19,3 +19,15 @@
   width: 12px;
 	border-radius: 5px;
 }
+
+.bg-neutral-800{
+  opacity: 0 !important;
+    display: none !important;
+    transform: scale(0) !important;
+}
+
+.fixed.bottom-14.right-5{
+  opacity: 0 !important;
+    display: none !important;
+    transform: scale(0) !important;
+}
