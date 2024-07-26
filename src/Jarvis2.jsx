@@ -32,7 +32,6 @@ const generationConfig = {
   maxOutputTokens: 8192,
   responseMimeType: "text/plain",
 };
-
 const safetySettings = [
   {
     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -212,7 +211,7 @@ const Jarvis2 = () => {
                 <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
                   <div className="flex items-center justify-between pb-2">
                   <strong>You: </strong>
-                  {msg.timestamp && <p className="text-sm px-[6px] py-[6px]  bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
+                  {msg.timestamp && <p className="text-[10px] px-[6px] py-[6px]  bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
                 </div>
                 {msg.user}
                 <br />

@@ -8,13 +8,14 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
 import "./avoid.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const converter = new showdown.Converter();
 
 const SharedSpace = () => {
   const [conversation, setConversation] = useState([]);
   const messagesEndRef = useRef(null);
+  let { encchats } = useParams();
 
   useEffect(() => {
     const recentChats = JSON.parse(localStorage.getItem("recentChats")) || [];
@@ -73,9 +74,9 @@ const SharedSpace = () => {
               {msg.user ? (
                 <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
                   <div className="flex items-center justify-between pb-2">
-                    <strong>You: </strong>
+                    <strong>{encchats}: </strong>
                     {msg.timestamp && (
-                      <p className="text-sm px-[6px] py-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
+                      <p className="text-[10px] px-[6px] py-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
                         {ParseDate(msg.timestamp)}
                       </p>
                     )}
@@ -154,9 +155,9 @@ const SharedSpace = () => {
       </div>
       <div className="w-full flex items-center justify-center ">
         <span className="flex items-center justify-center gap-3 p-3 pt-5">
-          <p className="bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-blue-600 font-semibold">
-            Shared conversation
-          </p>
+          <Link to={"/v2"} className="bg-white rounded-full px-5 py-2 border-2 border-white shadow-md text-gray-500 font-semibold">
+          Try Jarvis AI &nbsp; <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </Link>
         </span>
       </div>
       <Toaster />
