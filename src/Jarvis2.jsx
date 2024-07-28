@@ -319,12 +319,21 @@ const Jarvis2 = () => {
                     >
                       <i className="fas fa-envelope active:scale-95 transition-all text-gray-700 text-2xl"></i>
                     </Link>
+
+                    <button
+                      onClick={()=>{
+                        share();
+                      }}
+                      className="px-3.5 hidden  py-3 transition-colors group rounded-full bg-gray-200 md:flex items-center justify-center"
+                    >
+                      <i className="fas fa-share-nodes active:scale-95 transition-all text-gray-700 text-2xl"></i>
+                    </button>
                   </span>
                 </span>
               ) : (
                 <div className="">
                   <span className="flex items-center bg-gray-100 rounded-full flex-wrap justify-evenly gap-3 py-5 md:py-4 mt-5 md:gap-5">
-                    <p className="text-base break-all">{`${window.origin}/v2/share/*****`}</p>
+                    <p className="text-base hidden md:block break-all">{`${window.origin}/v2/share/*****`}</p>
                     <button
                       onClick={() => encrypt()}
                       className="px-3 py-2 rounded-full text-sm bg-gray-500 disabled:animate-pulse text-white"
@@ -360,7 +369,7 @@ const Jarvis2 = () => {
           conversation.map((msg, index) => (
             <div key={index} className={` text-gray-600 my-5 chat space-y-3`}>
               {msg.user ? (
-                <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
+                <div className="bg-gray-100 p-4 rounded-xl md:ms-10">
                   <div className="flex items-center justify-between pb-2">
                     <strong>You: </strong>
                     {msg.timestamp && (
@@ -373,7 +382,7 @@ const Jarvis2 = () => {
                   <br />
                 </div>
               ) : null}
-              <p className="bg-gray-100 p-4 me-5 md:me-10 rounded-xl">
+              <p className="bg-gray-100 p-4 md:me-10 rounded-xl">
                 <div className="message-container">
                   <div className="flex items-center justify-between ">
                     <span className="inline-flex items-center justify-center gap-2">
