@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { TbBrandWhatsapp, TbCopy } from "react-icons/tb";
 import CryptoJS from "crypto-js";
 import showdown from "showdown";
+import { FaGear } from "react-icons/fa6";
 import "./chat.css";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,22 +15,24 @@ const converter = new showdown.Converter();
 
 const SharedSpace = () => {
   const [conversation, setConversation] = useState([]);
+  const [loading, setloading] = useState(false);
   const messagesEndRef = useRef(null);
   let { encchats } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setloading(true);
         const { data, error } = await supabase
           .from("jarvis")
           .select("value")
           .eq("key", encchats);
 
         if (error) {
-          setConversation([]); 
+          setConversation([]);
         } else {
           if (data.length === 0) {
-            setConversation([]); 
+            setConversation([]);
           } else {
             const decryptedString = CryptoJS.AES.decrypt(
               atob(data[0].value),
@@ -41,6 +44,8 @@ const SharedSpace = () => {
         }
       } catch (err) {
         setConversation([]);
+      } finally {
+        setloading(false);
       }
     };
 
@@ -79,6 +84,16 @@ const SharedSpace = () => {
   };
 
   const renderChat = () => {
+    if (loading) {
+      return (
+        <div className="w-full flex-col gap-5 h-[70vh] overflow-hidden flex items-center justify-center">
+          <FaGear className="animate-spin text-5xl text-white" />
+          <span className="text-xl text-center break-words">
+            Your chats are on their way! <br /> Hang on Still
+          </span>
+        </div>
+      );
+    }
     if (conversation.length === 0) {
       return (
         <div className="flex items-center mb-10 justify-center gap-5 flex-col">

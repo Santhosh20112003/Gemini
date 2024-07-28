@@ -5,10 +5,12 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import "./modalscrollbar.css";
+import { AiOutlineImport } from "react-icons/ai";
+import { AiOutlineExport } from "react-icons/ai";
 import CryptoJS from "crypto-js";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { TbBrandWhatsapp } from "react-icons/tb";
-import { FaWhatsapp } from "react-icons/fa";
+import { TbWorldShare } from "react-icons/tb";
 import { IoArrowUpCircle } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
 import { FaGear } from "react-icons/fa6";
@@ -16,14 +18,14 @@ import Game from "./Game";
 import { FaXTwitter } from "react-icons/fa6";
 import showdown from "showdown";
 import "./chat.css";
-import { LuShare } from "react-icons/lu";
 import { FaBars } from "react-icons/fa6";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import "./avoid.css";
 import supabase from "./database";
+import * as Dialog from "@radix-ui/react-dialog";
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyAYQ7lif2N0XNiF27sEbZxbAfh5t6n8Aq0";
@@ -72,11 +74,15 @@ const Jarvis2 = () => {
   const [loading, setLoading] = useState(false);
   const [linkLoading, setLinkLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const recentChats = JSON.parse(localStorage.getItem("recentChats")) || [];
     setConversation(recentChats);
   }, []);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     localStorage.setItem("current_version", "2.0");
@@ -173,24 +179,32 @@ const Jarvis2 = () => {
     try {
       const jsonString = JSON.stringify(localStorage.getItem("recentChats"));
       if (prevChat != jsonString) {
-        setprevChat(jsonString);
-        const encryptedString = CryptoJS.AES.encrypt(
-          jsonString,
-          "HELLO"
-        ).toString();
-        const bstring = btoa(encryptedString);
-        const key = btoa(new Date().toString());
-        const { error: inserterror } = await supabase.from("jarvis").insert({
-          key: key,
-          value: bstring,
-        });
-        if (inserterror) {
-          toast.error("Unable to Generate Link try later", {
-            position: "top-right",
-            icon: "❌",
+        if (conversation.length != 0) {
+          setprevChat(jsonString);
+          const encryptedString = CryptoJS.AES.encrypt(
+            jsonString,
+            "HELLO"
+          ).toString();
+          const bstring = btoa(encryptedString);
+          const key = btoa(new Date().toString());
+          const { error: inserterror } = await supabase.from("jarvis").insert({
+            key: key,
+            value: bstring,
           });
+          if (inserterror) {
+            toast.error("Unable to Generate Link try later", {
+              position: "top-right",
+              icon: "❌",
+            });
+          } else {
+            setenc(`${window.origin}/v2/share/${key}`);
+          }
         } else {
-          setenc(`${window.origin}/v2/share/${key}`);
+          toast.remove();
+          toast.error("No Chats Are Found in Your Space", {
+            position: "top-right",
+            icon: "🥷",
+          });
         }
       }
     } catch (err) {
@@ -253,11 +267,48 @@ const Jarvis2 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-3 sm:p-5">
-      <div className="w-full top-0 fixed z-[1000] px-5 pb-2 md:pb-5 flex items-center justify-between">
-        <span className="opacity-0 scale-0">
-          <FaBars className="sm:text-2xl" />
+      <div className="w-full bg-opacity-10 backdrop-blur-md sm:backdrop-blur-sm md:backdrop-blur-none bg-blue-500 md:bg-transparent top-0 fixed z-[100] px-5 sm:pb-2 md:pb-5 flex items-center justify-between">
+        <span className="">
+          <Dialog.Root>
+            <Dialog.Trigger asChild>
+              <button onClick={handleShow}>
+                <FaBars className="sm:text-2xl" />
+              </button>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+              <Dialog.Overlay className="bg-blackA6 z-[1000] data-[state=open]:left-0 left-[-50%] fixed inset-0" />
+              <Dialog.Content className="z-[10000] h-screen data-[state=open]:animate-slideDrawer fixed top-0 left-0 w-[75%] max-w-[450px] block  bg-white p-6 focus:outline-none">
+                <Dialog.Title className="text-mauve12 inline-flex items-center gap-3 m-0 text-[17px] font-medium">
+                  <img
+                    src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
+                    alt="jarvis"
+                    className="w-8 h-8 rounded-full p-1 bg-[#0d2551]"
+                  />
+                  <p className="text-xl">Jarvis AI</p>
+                </Dialog.Title>
+
+                <div className="mt-10 flex flex-col justify-start gap-5">
+                  <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                    Export Chat <AiOutlineExport />
+                  </button>
+                  <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                    Import Chat <AiOutlineImport />
+                  </button>
+                </div>
+
+                <Link to={"https://santechh.online"} target="_blank" className="fixed m-3 hidden md:inline-flex w-full max-w-[420px] items-center text-white bg-[#5ca1f9] border-2 border-[#5ca1f9] justify-center rounded-lg gap-5 px-10 py-5 left-0 bottom-0">
+                  <img
+                    src="https://ik.imagekit.io/vituepzjm/Santech/Untitled%20design%20(14).png"
+                    alt="jarvis"
+                    className="h-10 rounded-md"
+                  />
+                  <p className="capitalize">Powered by Santech</p>
+                </Link>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
         </span>
-        <span className="flex items-center justify-center gap-3 p-3 pt-5">
+        <span className="flex items-center justify-center gap-3 px-2 py-3  sm:p-3 sm:pt-5 ">
           <Link
             className={` rounded-full px-3 py-1 md:px-5 md:py-2 border-2 text-sm sm:text-base border-transparent text-white font-semibold`}
             to={"/v1"}
@@ -273,13 +324,13 @@ const Jarvis2 = () => {
         </span>
         <AlertDialog.Root>
           <AlertDialog.Trigger asChild>
-            <button className=" p-1.5 active:scale-95 transition-all">
-              <LuShare className="sm:text-[1.3rem]" />
+            <button className=" md:p-1.5 active:scale-95 sm:mt-2 transition-all">
+              <TbWorldShare className="sm:text-[2rem] text-blue-500 text-[1.5rem] rounded-full bg-white p-1" />
             </button>
           </AlertDialog.Trigger>
           <AlertDialog.Portal>
-            <AlertDialog.Overlay className="bg-blackA6 z-[100000000] data-[state=open]:animate-overlayShow fixed inset-0" />
-            <AlertDialog.Content className="z-[1000000000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+            <AlertDialog.Overlay className="bg-blackA6 z-[100] data-[state=open]:animate-overlayShow fixed inset-0" />
+            <AlertDialog.Content className="z-[1000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
               <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
                 Create a public page to share
               </AlertDialog.Title>
@@ -321,7 +372,7 @@ const Jarvis2 = () => {
                     </Link>
 
                     <button
-                      onClick={()=>{
+                      onClick={() => {
                         share();
                       }}
                       className="px-3.5 hidden  py-3 transition-colors group rounded-full bg-gray-200 md:flex items-center justify-center"
@@ -357,7 +408,7 @@ const Jarvis2 = () => {
           </AlertDialog.Portal>
         </AlertDialog.Root>
       </div>
-      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
+      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[85vh]  sm:max-h-[76vh]">
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
             <Game className="rounded-md bg-gray-300 shadow-sm" />
@@ -481,7 +532,8 @@ const Jarvis2 = () => {
           )}
         </button>
       </form>
-      <Toaster />
+      <p className=""></p>
+      <Toaster className="z-[1000000000]" />
     </div>
   );
 };
