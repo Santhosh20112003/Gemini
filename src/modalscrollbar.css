@@ -1,0 +1,21 @@
+.scrollbar {
+    /* Basic styles for the scrollbar container */
+    overflow-x: auto; /* Enable vertical scrollbar */
+    height: 40px; /* Adjust height as needed */
+    /* Scrollbar styles */
+    scrollbar-width: thin; /* Set scrollbar width to thin */
+    scrollbar-color: #ccc #fff; /* Customize scrollbar colors */
+  }
+  
+  .scrollbar::-webkit-scrollbar {
+    width: 10px; /* Customize scrollbar width */
+  }
+  
+  .scrollbar::-webkit-scrollbar-track {
+    background-color: #fff; /* Customize scrollbar track color */
+  }
+  
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Customize scrollbar thumb color */
+    border-radius: 10px; /* Customize scrollbar thumb border radius */
+  }

@@ -4,27 +4,37 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
+import "./modalscrollbar.css";
+import CryptoJS from "crypto-js";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { TbBrandWhatsapp } from "react-icons/tb";
+import { FaWhatsapp } from "react-icons/fa";
 import { IoArrowUpCircle } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
 import { FaGear } from "react-icons/fa6";
-import Game from "./Game"
+import Game from "./Game";
+import { FaXTwitter } from "react-icons/fa6";
 import showdown from "showdown";
 import "./chat.css";
+import { LuShare } from "react-icons/lu";
+import { FaBars } from "react-icons/fa6";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
 import { Link } from "react-router-dom";
 import "./avoid.css";
+import supabase from "./database";
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyAYQ7lif2N0XNiF27sEbZxbAfh5t6n8Aq0";
 const genAI = new GoogleGenerativeAI(API_KEY);
+
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
   systemInstruction:
     "Hello! I'm Jarvis, an AI model developed by Santhosh Technologies. I can assist you in all ways as a mentor, friend, tutor, and a teacher. For more details about Santhosh Technologies and its products, refer to the link http://santhosh-technologies.netlify.app/",
 });
+
 const generationConfig = {
   temperature: 1,
   topP: 0.95,
@@ -32,6 +42,7 @@ const generationConfig = {
   maxOutputTokens: 8192,
   responseMimeType: "text/plain",
 };
+
 const safetySettings = [
   {
     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -56,7 +67,10 @@ const MAX_RECENT_CHATS = 5;
 const Jarvis2 = () => {
   const [conversation, setConversation] = useState([]);
   const [prompt, setPrompt] = useState("");
+  const [enc, setenc] = useState("");
+  const [prevChat, setprevChat] = useState("");
   const [loading, setLoading] = useState(false);
+  const [linkLoading, setLinkLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -65,16 +79,13 @@ const Jarvis2 = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("current_version","2.0");
+    localStorage.setItem("current_version", "2.0");
     toast.remove();
-    toast.success(
-      "Chats are stored locally with the last 5 chats preserved.",
-      { 
-        position:"top-right",
-        duration: 3000,
-        icon: "🥷",
-      }
-    );
+    // toast.success("Chats are stored locally with the last 5 chats preserved.", {
+    //   position: "top-right",
+    //   duration: 3000,
+    //   icon: "🥷",
+    // });
   }, []);
 
   useEffect(() => {
@@ -92,7 +103,6 @@ const Jarvis2 = () => {
 
   const handleChatSubmission = async (message) => {
     setLoading(true);
-
     try {
       const chatSession = model.startChat({
         generationConfig,
@@ -138,6 +148,7 @@ const Jarvis2 = () => {
       const newMessage = { user: message, bot: text, timestamp: new Date() };
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
+      setenc("");
     } catch (error) {
       console.error(error.message);
       toast.error(`Unable to process your request! `, {
@@ -157,17 +168,74 @@ const Jarvis2 = () => {
     });
   };
 
+  async function encrypt() {
+    setLinkLoading(true);
+    try {
+      const jsonString = JSON.stringify(localStorage.getItem("recentChats"));
+      if (prevChat != jsonString) {
+        setprevChat(jsonString);
+        const encryptedString = CryptoJS.AES.encrypt(
+          jsonString,
+          "HELLO"
+        ).toString();
+        const bstring = btoa(encryptedString);
+        const key = btoa(new Date().toString());
+        const { error: inserterror } = await supabase.from("jarvis").insert({
+          key: key,
+          value: bstring,
+        });
+        if (inserterror) {
+          toast.error("Unable to Generate Link try later", {
+            position: "top-right",
+            icon: "❌",
+          });
+        } else {
+          setenc(`${window.origin}/v2/share/${key}`);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Unable to Generate Link try later", {
+        position: "top-right",
+        icon: "❌",
+      });
+    } finally {
+      setLinkLoading(false);
+    }
+  }
+
   const handleShareResponse = (response) => {
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(response)}`;
+    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      response
+    )}`;
     const screenWidth = window.screen.width;
     const screenHeight = window.screen.height;
-    const x = (screenWidth / 2) - (400 / 2);
-  const y = (screenHeight / 2) - (400 / 2);
-    window.open(shareUrl, "" , `width=400,height=400,left=${x},top=${y}`);
+    const x = screenWidth / 2 - 400 / 2;
+    const y = screenHeight / 2 - 400 / 2;
+    window.open(shareUrl, "", `width=400,height=400,left=${x},top=${y}`);
     toast.success("Response Shared via Whatsapp!", {
       position: "top-center",
       icon: "✅",
     });
+  };
+
+  const share = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Jarvis AI Chat",
+          url: enc,
+        })
+        .then(() => {
+          console.log("ok");
+        })
+        .catch((err) => {
+          console.error(err);
+          alert(err);
+        });
+    } else {
+      console.log("Doesnt support");
+    }
   };
 
   const handleFormSubmit = (e) => {
@@ -185,48 +253,136 @@ const Jarvis2 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500 flex flex-col items-center justify-end text-white p-3 sm:p-5">
-      <div className="w-full top-0 fixed z-[1000] pb-2 md:pb-5 flex items-center justify-center">
-        <span className="flex items-center justify-center gap-3 p-3 pt-5">
-        <Link className={` rounded-full px-3 py-1 md:px-5 md:py-2 border-2 text-sm sm:text-base border-transparent text-white font-semibold`} to={"/v1"} >Jarvis 1.0</Link>
-        <Link className={`bg-white rounded-full px-3 py-1 md:px-5 md:py-2 text-sm sm:text-base border-2 border-white shadow-md text-blue-500 font-semibold`} to={"/v2"} >Jarvis 2.0</Link>
+      <div className="w-full top-0 fixed z-[1000] px-5 pb-2 md:pb-5 flex items-center justify-between">
+        <span className="opacity-0 scale-0">
+          <FaBars className="sm:text-2xl" />
         </span>
+        <span className="flex items-center justify-center gap-3 p-3 pt-5">
+          <Link
+            className={` rounded-full px-3 py-1 md:px-5 md:py-2 border-2 text-sm sm:text-base border-transparent text-white font-semibold`}
+            to={"/v1"}
+          >
+            Jarvis 1.0
+          </Link>
+          <Link
+            className={`bg-white rounded-full px-3 py-1 md:px-5 md:py-2 text-sm sm:text-base border-2 border-white shadow-md text-blue-500 font-semibold`}
+            to={"/v2"}
+          >
+            Jarvis 2.0
+          </Link>
+        </span>
+        <AlertDialog.Root>
+          <AlertDialog.Trigger asChild>
+            <button className=" p-1.5 active:scale-95 transition-all">
+              <LuShare className="sm:text-[1.3rem]" />
+            </button>
+          </AlertDialog.Trigger>
+          <AlertDialog.Portal>
+            <AlertDialog.Overlay className="bg-blackA6 z-[100000000] data-[state=open]:animate-overlayShow fixed inset-0" />
+            <AlertDialog.Content className="z-[1000000000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+              <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                Create a public page to share
+              </AlertDialog.Title>
+              {enc.length > 1 ? (
+                <span className="w-full">
+                  <span className="flex mt-5 items-start gap-3 justify-center">
+                    <p className="text-[15px] scrollbar overflow-x-auto h-[20px]">
+                      {enc}
+                    </p>
+                  </span>
+                  <span class="flex items-center justify-center mt-5 gap-5">
+                    <Link
+                      to={`https://www.linkedin.com/shareArticle?mini=true&url=${enc}`}
+                      target="_blank"
+                      className="px-3.5 py-3  transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <i className="fab active:scale-95 transition-all text-gray-700 fa-linkedin-in text-2xl"></i>
+                    </Link>
+                    <Link
+                      to={`whatsapp://send?text=${enc}`}
+                      target="_blank"
+                      className="px-3.5 py-3  transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <i className="fab fa-whatsapp active:scale-95 transition-all text-gray-700 text-2xl"></i>
+                    </Link>
+                    <Link
+                      to={`http://www.twitter.com/share?url=${enc}`}
+                      target="_blank"
+                      className="px-3.5 py-3  transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <FaXTwitter className="text-2xl active:scale-95 transition-all text-gray-700" />
+                    </Link>
+                    <Link
+                      to={`mailto:?body=Check out this Jarvis Chat ${enc}`}
+                      target="_blank"
+                      className="px-3.5 py-3 transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <i className="fas fa-envelope active:scale-95 transition-all text-gray-700 text-2xl"></i>
+                    </Link>
+                  </span>
+                </span>
+              ) : (
+                <div className="">
+                  <span className="flex items-center bg-gray-100 rounded-full flex-wrap justify-evenly gap-3 py-5 md:py-4 mt-5 md:gap-5">
+                    <p className="text-base break-all">{`${window.origin}/v2/share/*****`}</p>
+                    <button
+                      onClick={() => encrypt()}
+                      className="px-3 py-2 rounded-full text-sm bg-gray-500 disabled:animate-pulse text-white"
+                      disabled={linkLoading}
+                    >
+                      Generate
+                    </button>
+                  </span>
+                </div>
+              )}
+
+              <AlertDialog.Cancel asChild>
+                <button
+                  className="text-gray-400 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-none focus:outline-none"
+                  aria-label="Close"
+                >
+                  <i className="fas fa-xmark"></i>
+                </button>
+              </AlertDialog.Cancel>
+            </AlertDialog.Content>
+          </AlertDialog.Portal>
+        </AlertDialog.Root>
       </div>
       <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[75vh]">
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
-            <Game
-              className="rounded-md bg-gray-300 shadow-sm"
-            />
+            <Game className="rounded-md bg-gray-300 shadow-sm" />
             <p className="md:text-3xl text-xl text-white font-bold">
               Hello I'm Jarvis, How can I help you today?
             </p>
           </div>
         ) : (
           conversation.map((msg, index) => (
-            <div
-              key={index}
-              className={` text-gray-600 my-5 chat space-y-3`}
-            >
+            <div key={index} className={` text-gray-600 my-5 chat space-y-3`}>
               {msg.user ? (
                 <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
                   <div className="flex items-center justify-between pb-2">
-                  <strong>You: </strong>
-                  {msg.timestamp && <p className="text-[10px] px-[6px] py-[6px]  bg-gray-500 text-white rounded-lg w-fit leading-none">{ParseDate(msg.timestamp)}</p>}
-                </div>
-                {msg.user}
-                <br />
+                    <strong>You: </strong>
+                    {msg.timestamp && (
+                      <p className="text-[10px] px-[6px] py-[6px]  bg-gray-500 text-white rounded-lg w-fit leading-none">
+                        {ParseDate(msg.timestamp)}
+                      </p>
+                    )}
+                  </div>
+                  {msg.user}
+                  <br />
                 </div>
               ) : null}
               <p className="bg-gray-100 p-4 me-5 md:me-10 rounded-xl">
                 <div className="message-container">
                   <div className="flex items-center justify-between ">
-                  <span className="inline-flex items-center justify-center gap-2">
-                    <img
-                      src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
-                      alt="jarvis"
-                      className="w-6 h-6 rounded-full p-1 bg-[#0d2551]"
-                    />
-                    <strong className="text-lg">Jarvis AI</strong>
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <img
+                        src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
+                        alt="jarvis"
+                        className="w-6 h-6 rounded-full p-1 bg-[#0d2551]"
+                      />
+                      <strong className="text-lg">Jarvis AI</strong>
                     </span>
                     <div className="message-actions flex items-center justify-end gap-3 p-3">
                       <Tooltip.Provider>
@@ -305,7 +461,15 @@ const Jarvis2 = () => {
           title="send"
           disabled={loading}
         >
-          {loading ? <FaGear className="animate-spin p-[0.5rem] text-gray-400" /> : <IoArrowUpCircle  className={` ${prompt.length < 1 ? "text-gray-300":"text-blue-500 rotate-90"} transition-all duration-100 ease-linear`} />}
+          {loading ? (
+            <FaGear className="animate-spin p-[0.5rem] text-gray-400" />
+          ) : (
+            <IoArrowUpCircle
+              className={` ${
+                prompt.length < 1 ? "text-gray-300" : "text-blue-500 rotate-90"
+              } transition-all duration-100 ease-linear`}
+            />
+          )}
         </button>
       </form>
       <Toaster />
