@@ -5,6 +5,8 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import "./modalscrollbar.css";
+import { BiCopy } from "react-icons/bi";
+import { BiSolidCopy } from "react-icons/bi";
 import { AiOutlineImport } from "react-icons/ai";
 import { AiOutlineExport } from "react-icons/ai";
 import CryptoJS from "crypto-js";
@@ -69,20 +71,21 @@ const MAX_RECENT_CHATS = 5;
 const Jarvis2 = () => {
   const [conversation, setConversation] = useState([]);
   const [prompt, setPrompt] = useState("");
-  const [enc, setenc] = useState("");
-  const [prevChat, setprevChat] = useState("");
   const [loading, setLoading] = useState(false);
+  const [enc, setenc] = useState("");
+  const [code, setcode] = useState("");
+  const [prevChat, setprevChat] = useState("");
+  const [uploadCode, setUploadCode] = useState("");
+  const [importloading, setImportLoading] = useState(false);
+  const [isGenerating, setGenerating] = useState(false);
   const [linkLoading, setLinkLoading] = useState(false);
+  const [isCopied, setCopied] = useState(false);
   const messagesEndRef = useRef(null);
-  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const recentChats = JSON.parse(localStorage.getItem("recentChats")) || [];
     setConversation(recentChats);
   }, []);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   useEffect(() => {
     localStorage.setItem("current_version", "2.0");
@@ -155,6 +158,7 @@ const Jarvis2 = () => {
       setConversation((prev) => [...prev, newMessage]);
       saveRecentChats([...conversation, newMessage]);
       setenc("");
+      setcode("");
     } catch (error) {
       console.error(error.message);
       toast.error(`Unable to process your request! `, {
@@ -218,6 +222,50 @@ const Jarvis2 = () => {
     }
   }
 
+  async function generateCode() {
+    setGenerating(true);
+    try {
+      const jsonString = JSON.stringify(localStorage.getItem("recentChats"));
+      if (prevChat != jsonString) {
+        if (conversation.length != 0) {
+          setprevChat(jsonString);
+          const encryptedString = CryptoJS.AES.encrypt(
+            jsonString,
+            "HELLO"
+          ).toString();
+          const bstring = btoa(encryptedString);
+          const key = btoa(new Date().toString());
+          const { error: inserterror } = await supabase.from("jarvis").insert({
+            key: key,
+            value: bstring,
+          });
+          if (inserterror) {
+            toast.error("Unable to Generate Link try later", {
+              position: "top-right",
+              icon: "❌",
+            });
+          } else {
+            setcode(key);
+          }
+        } else {
+          toast.remove();
+          toast.error("No Chats Are Found in Your Space", {
+            position: "top-right",
+            icon: "🥷",
+          });
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Unable to Generate Link try later", {
+        position: "top-right",
+        icon: "❌",
+      });
+    } finally {
+      setGenerating(false);
+    }
+  }
+
   const handleShareResponse = (response) => {
     const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
       response
@@ -231,6 +279,53 @@ const Jarvis2 = () => {
       position: "top-center",
       icon: "✅",
     });
+  };
+
+  const handleUploadCode = async (e) => {
+    e.preventDefault();
+
+    if (uploadCode.length > 1) {
+      const ok = window.confirm(
+        "Do you want to import new chats? (Older chats will be deleted)"
+      );
+
+      if (ok) {
+        try {
+          setImportLoading(true);
+
+          const { data, error } = await supabase
+            .from("jarvis")
+            .select("value")
+            .eq("key", uploadCode);
+
+          if (error || !data || data.length === 0) {
+            toast.error("Unable to fetch export chats. Please try again.");
+            return;
+          }
+
+          const decryptedString = CryptoJS.AES.decrypt(
+            atob(data[0].value),
+            "HELLO"
+          ).toString(CryptoJS.enc.Utf8);
+
+          const decryptedArray = JSON.parse(decryptedString);
+          const final = JSON.parse(decryptedArray);
+          // setConversation(final);
+          saveRecentChats(final);
+          window.location.reload();
+        } catch (err) {
+          toast.error("Unable to fetch export chats. Please try again.");
+        } finally {
+          setImportLoading(false);
+          
+        }
+      }
+    } else {
+      toast.success("Enter Code to import Chats", {
+        position: "top-center",
+        icon: "✏️",
+      });
+    }
   };
 
   const share = () => {
@@ -249,6 +344,49 @@ const Jarvis2 = () => {
         });
     } else {
       console.log("Doesnt support");
+    }
+  };
+
+  const shareCode = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Chat Session Code",
+          text: `*Jarvis AI Export Chat Code* ${code}`,
+        })
+        .then(() => {
+          console.log("ok");
+        })
+        .catch((err) => {
+          console.error(err);
+          alert(err);
+        });
+    } else {
+      console.log("Doesnt support");
+    }
+  };
+
+  const copyCode = (text) => {
+    try {
+      setCopied(false);
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+      } else {
+        console.log("Doesnt support");
+      }
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+    } catch (err) {
+      toast.error("Unable to copy the text try manually", {
+        position: "top-center",
+        icon: "❌",
+      });
+      console.log(err);
+    } finally {
+      setCopied(true);
     }
   };
 
@@ -271,7 +409,7 @@ const Jarvis2 = () => {
         <span className="">
           <Dialog.Root>
             <Dialog.Trigger asChild>
-              <button onClick={handleShow}>
+              <button>
                 <FaBars className="sm:text-2xl" />
               </button>
             </Dialog.Trigger>
@@ -289,12 +427,122 @@ const Jarvis2 = () => {
                   </Dialog.Title>
 
                   <div className="mt-5 md:mt-10 flex flex-col  gap-5">
-                    <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
-                      Export Chat <AiOutlineExport />
-                    </button>
-                    <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
-                      Import Chat <AiOutlineImport />
-                    </button>
+                    <AlertDialog.Root>
+                      <AlertDialog.Trigger asChild>
+                        <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                          Export Chat <AiOutlineExport />
+                        </button>
+                      </AlertDialog.Trigger>
+                      <AlertDialog.Portal>
+                        <AlertDialog.Overlay className="bg-blackA6 z-[10000] data-[state=open]:animate-overlayShow fixed inset-0" />
+                        <AlertDialog.Content className="z-[100000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                          <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                            Create Your Export Chat Code
+                          </AlertDialog.Title>
+                          {code.length > 1 ? (
+                            <span className="w-full">
+                              <span className="flex mt-5 items-start gap-5 justify-center">
+                                <p className="text-[15px] scrollbar overflow-x-auto h-[20px]">
+                                  {code}
+                                </p>
+                                <button
+                                  onClick={() => copyCode(code)}
+                                  className=" transition-colors mt-1 group rounded-full flex items-center justify-center"
+                                >
+                                  {isCopied ? (
+                                    <BiSolidCopy className="active:scale-95 transition-all text-gray-600 text-xl" />
+                                  ) : (
+                                    <BiCopy className="active:scale-95 transition-all text-gray-600 text-xl" />
+                                  )}
+                                </button>
+                              </span>
+                              <span class="flex items-center justify-center mt-5 gap-5">
+                                <button
+                                  onClick={() => {
+                                    shareCode();
+                                  }}
+                                  className="px-5 py-3 transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                                >
+                                  Share &nbsp;{" "}
+                                  <i className="fas fa-share-nodes active:scale-95 transition-all text-gray-600 text-2xl"></i>
+                                </button>
+                              </span>
+                            </span>
+                          ) : (
+                            <div className="">
+                              <span className="flex items-center md:bg-gray-100 rounded-full flex-wrap justify-center gap-3 md:gap-5 py-5 md:py-4 mt-5">
+                                <p className="text-xl hidden md:block break-all">
+                                  **** **** **** ****
+                                </p>
+                                <button
+                                  onClick={() => generateCode()}
+                                  className="px-3 py-2 rounded-full text-sm bg-gray-500 disabled:animate-pulse text-white"
+                                  disabled={isGenerating}
+                                >
+                                  Generate Code
+                                </button>
+                              </span>
+                            </div>
+                          )}
+
+                          <AlertDialog.Cancel asChild>
+                            <button
+                              className="text-gray-400 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-none focus:outline-none"
+                              aria-label="Close"
+                            >
+                              <i className="fas fa-xmark"></i>
+                            </button>
+                          </AlertDialog.Cancel>
+                        </AlertDialog.Content>
+                      </AlertDialog.Portal>
+                    </AlertDialog.Root>
+
+                    <AlertDialog.Root>
+                      <AlertDialog.Trigger asChild>
+                        <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                          Import Chat <AiOutlineImport />
+                        </button>
+                      </AlertDialog.Trigger>
+                      <AlertDialog.Portal>
+                        <AlertDialog.Overlay className="bg-blackA6 z-[10000] data-[state=open]:animate-overlayShow fixed inset-0" />
+                        <AlertDialog.Content className="z-[100000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                          <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+                            Import Your Chats Here ⬇️
+                          </AlertDialog.Title>
+
+                          <form
+                            onSubmit={(e) => handleUploadCode(e)}
+                            className="mt-5 flex items-center justify-center gap-3"
+                          >
+                            <input
+                              autoFocus
+                              type="text"
+                              placeholder="Enter Your Exported Code"
+                              onChange={(e) => {
+                                setUploadCode(e.target.value);
+                              }}
+                              className="px-3 py-2 w-full focus:outline-none rounded-full bg-gray-100 shadow "
+                            />
+                            <button
+                              type="submit"
+                              disabled={importloading}
+                              className="px-5 py-2 bg-blue-400 disabled:animate-pulse text-white rounded-full"
+                            >
+                              Import
+                            </button>
+                          </form>
+
+                          <AlertDialog.Cancel asChild>
+                            <button
+                              className="text-gray-400 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-none focus:outline-none"
+                              aria-label="Close"
+                            >
+                              <i className="fas fa-xmark"></i>
+                            </button>
+                          </AlertDialog.Cancel>
+                        </AlertDialog.Content>
+                      </AlertDialog.Portal>
+                    </AlertDialog.Root>
                   </div>
                 </span>
 
@@ -338,7 +586,7 @@ const Jarvis2 = () => {
             <AlertDialog.Overlay className="bg-blackA6 z-[100] data-[state=open]:animate-overlayShow fixed inset-0" />
             <AlertDialog.Content className="z-[1000] data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-2xl bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
               <AlertDialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
-                Create a public page to share
+                Create a public page to share Chats
               </AlertDialog.Title>
               {enc.length > 1 ? (
                 <span className="w-full">
@@ -347,7 +595,7 @@ const Jarvis2 = () => {
                       {enc}
                     </p>
                   </span>
-                  <span class="flex items-center justify-center mt-5 gap-5">
+                  <span class="flex items-center flex-wrap justify-center mt-5 gap-5">
                     <Link
                       to={`https://www.linkedin.com/shareArticle?mini=true&url=${enc}`}
                       target="_blank"
@@ -372,7 +620,7 @@ const Jarvis2 = () => {
                     <Link
                       to={`mailto:?body=Check out this Jarvis Chat ${enc}`}
                       target="_blank"
-                      className="px-3.5 py-3 transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
+                      className="px-3.5 py-3 transition-colors hidden group rounded-full bg-gray-200 md:flex items-center justify-center"
                     >
                       <i className="fas fa-envelope active:scale-95 transition-all text-gray-700 text-2xl"></i>
                     </Link>
@@ -381,7 +629,7 @@ const Jarvis2 = () => {
                       onClick={() => {
                         share();
                       }}
-                      className="px-3.5 hidden  py-3 transition-colors group rounded-full bg-gray-200 md:flex items-center justify-center"
+                      className="px-3.5 py-3 transition-colors group rounded-full bg-gray-200 flex items-center justify-center"
                     >
                       <i className="fas fa-share-nodes active:scale-95 transition-all text-gray-700 text-2xl"></i>
                     </button>
