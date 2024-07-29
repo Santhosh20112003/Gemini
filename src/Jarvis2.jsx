@@ -617,13 +617,6 @@ const Jarvis2 = () => {
                     >
                       <FaXTwitter className="text-2xl active:scale-95 transition-all text-gray-700" />
                     </Link>
-                    <Link
-                      to={`mailto:?body=Check out this Jarvis Chat ${enc}`}
-                      target="_blank"
-                      className="px-3.5 py-3 transition-colors hidden group rounded-full bg-gray-200 md:flex items-center justify-center"
-                    >
-                      <i className="fas fa-envelope active:scale-95 transition-all text-gray-700 text-2xl"></i>
-                    </Link>
 
                     <button
                       onClick={() => {
