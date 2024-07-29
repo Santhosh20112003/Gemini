@@ -277,26 +277,32 @@ const Jarvis2 = () => {
             </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="bg-blackA6 z-[1000] data-[state=open]:left-0 left-[-50%] fixed inset-0" />
-              <Dialog.Content className="z-[10000] h-screen data-[state=open]:animate-slideDrawer fixed top-0 left-0 w-[75%] max-w-[450px] block  bg-white p-6 focus:outline-none">
-                <Dialog.Title className="text-mauve12 inline-flex items-center gap-3 m-0 text-[17px] font-medium">
-                  <img
-                    src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
-                    alt="jarvis"
-                    className="w-8 h-8 rounded-full p-1 bg-[#0d2551]"
-                  />
-                  <p className="text-xl">Jarvis AI</p>
-                </Dialog.Title>
+              <Dialog.Content className="z-[10000] h-screen data-[state=open]:animate-slideDrawer fixed top-0 left-0 w-[75%] flex flex-col justify-between max-w-[450px]  bg-white p-6 focus:outline-none">
+                <span className="">
+                  <Dialog.Title className="text-mauve12 inline-flex items-center gap-3 m-0 text-[17px] font-medium">
+                    <img
+                      src="https://ik.imagekit.io/vituepzjm/Jarvis.png"
+                      alt="jarvis"
+                      className="w-8 h-8 rounded-full p-1 bg-[#0d2551]"
+                    />
+                    <p className="text-xl">Jarvis AI</p>
+                  </Dialog.Title>
 
-                <div className="mt-10 flex flex-col justify-start gap-5">
-                  <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
-                    Export Chat <AiOutlineExport />
-                  </button>
-                  <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
-                    Import Chat <AiOutlineImport />
-                  </button>
-                </div>
+                  <div className="mt-5 md:mt-10 flex flex-col  gap-5">
+                    <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                      Export Chat <AiOutlineExport />
+                    </button>
+                    <button className="bg-gray-200 rounded-lg text-base transition-all active:scale-95 px-3 py-3 inline-flex items-center justify-center gap-3">
+                      Import Chat <AiOutlineImport />
+                    </button>
+                  </div>
+                </span>
 
-                <Link to={"https://santechh.online"} target="_blank" className="fixed m-3 hidden md:inline-flex w-full max-w-[420px] items-center text-white bg-[#5ca1f9] border-2 border-[#5ca1f9] justify-center rounded-lg gap-5 px-10 py-5 left-0 bottom-0">
+                <Link
+                  to={"https://santechh.online"}
+                  target="_blank"
+                  className=" flex w-full max-w-[420px] items-center text-white bg-[#5ca1f9] border-2 border-[#5ca1f9] justify-center rounded-lg gap-5 px-2 py-2"
+                >
                   <img
                     src="https://ik.imagekit.io/vituepzjm/Santech/Untitled%20design%20(14).png"
                     alt="jarvis"

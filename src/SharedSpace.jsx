@@ -111,7 +111,7 @@ const SharedSpace = () => {
       return conversation.map((msg, index) => (
         <div key={index} className={`text-gray-600 my-5 chat space-y-3`}>
           {msg.user && (
-            <div className="bg-gray-100 p-4 rounded-xl ms-5 md:ms-10">
+            <div className="bg-gray-100 p-4 rounded-xl md:ms-10">
               <div className="flex items-center justify-between pb-2">
                 <strong>{encchats.slice(0, 15)}: </strong>
                 {msg.timestamp && (
@@ -124,7 +124,7 @@ const SharedSpace = () => {
               <br />
             </div>
           )}
-          <p className="bg-gray-100 p-4 me-5 md:me-10 rounded-xl">
+          <p className="bg-gray-100 p-4 md:me-10 rounded-xl">
             <div className="message-container">
               <div className="flex items-center justify-between ">
                 <span className="inline-flex items-center justify-center gap-2">
