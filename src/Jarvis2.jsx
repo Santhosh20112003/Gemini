@@ -24,7 +24,7 @@ import { FaBars } from "react-icons/fa6";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import toast, { Toaster } from "react-hot-toast";
 import { ParseDate } from "./common/links";
-import { json, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./avoid.css";
 import supabase from "./database";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -90,11 +90,11 @@ const Jarvis2 = () => {
   useEffect(() => {
     localStorage.setItem("current_version", "2.0");
     toast.remove();
-    // toast.success("Chats are stored locally with the last 5 chats preserved.", {
-    //   position: "top-right",
-    //   duration: 3000,
-    //   icon: "🥷",
-    // });
+    toast.success("Chats are stored locally with the last 5 chats preserved.", {
+      position: "top-right",
+      duration: 3000,
+      icon: "🥷",
+    });
   }, []);
 
   useEffect(() => {
