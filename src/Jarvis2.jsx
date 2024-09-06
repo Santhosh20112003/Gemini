@@ -159,6 +159,7 @@ const Jarvis2 = () => {
       saveRecentChats([...conversation, newMessage]);
       setenc("");
       setcode("");
+      setPrompt("");
     } catch (error) {
       console.error(error.message);
       toast.error(`Unable to process your request! `, {
@@ -400,7 +401,6 @@ const Jarvis2 = () => {
       return;
     }
     handleChatSubmission(prompt);
-    setPrompt("");
   };
 
   return (
