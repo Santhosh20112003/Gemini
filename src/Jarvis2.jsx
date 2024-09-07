@@ -47,24 +47,7 @@ const generationConfig = {
   responseMimeType: "text/plain",
 };
 
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-  },
-];
+const safetySettings = [{ category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE, },];
 
 const MAX_RECENT_CHATS = 5;
 
@@ -113,10 +96,10 @@ const Jarvis2 = () => {
   const handleChatSubmission = async (message) => {
     setLoading(true);
     try {
-      const chatSession = model.startChat({
-        generationConfig,
-        safetySettings,
-        history: [
+      const history = conversation.map(item => [
+        { role: "user", parts: [{ text: item.user }] },
+        { role: "model", parts: [{ text: item.bot }] }
+      ]).flat() || [
           { role: "user", parts: [{ text: "hello" }] },
           {
             role: "model",
@@ -135,9 +118,13 @@ const Jarvis2 = () => {
               },
             ],
           },
-        ],
-      });
+        ];
 
+      const chatSession = model.startChat({
+        generationConfig,
+        safetySettings,
+        history,
+      });
       const result = await chatSession.sendMessage(message);
       const response = await result.response;
 
@@ -318,7 +305,7 @@ const Jarvis2 = () => {
           toast.error("Unable to fetch export chats. Please try again.");
         } finally {
           setImportLoading(false);
-          
+
         }
       }
     } else {
@@ -772,9 +759,8 @@ const Jarvis2 = () => {
             <FaGear className="animate-spin p-[0.5rem] text-gray-400" />
           ) : (
             <IoArrowUpCircle
-              className={` ${
-                prompt.length < 1 ? "text-gray-300" : "text-blue-500 rotate-90"
-              } transition-all duration-100 ease-linear`}
+              className={` ${prompt.length < 1 ? "text-gray-300" : "text-blue-500 rotate-90"
+                } transition-all duration-100 ease-linear`}
             />
           )}
         </button>
