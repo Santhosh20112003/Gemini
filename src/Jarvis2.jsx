@@ -30,7 +30,7 @@ import supabase from "./database";
 import * as Dialog from "@radix-ui/react-dialog";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyAYQ7lif2N0XNiF27sEbZxbAfh5t6n8Aq0";
+const API_KEY = "AIzaSyB-P8iQkM37AfybsQHc1EWlqk_MueuW8-E";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({
