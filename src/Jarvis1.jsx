@@ -81,7 +81,7 @@ const Jarvis1 = () => {
   const handleChatSubmission = async (message) => {
     setLoading(true);
     try {
-
+      console.log(image, imageInlineData)
       const result = await model.generateContent([
         prompt, imageInlineData ?? null
       ]);
