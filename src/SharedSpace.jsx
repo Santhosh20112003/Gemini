@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { TbBrandWhatsapp, TbCopy } from "react-icons/tb";
+import { TbBrandWhatsapp, TbCopy, TbShare } from "react-icons/tb";
 import CryptoJS from "crypto-js";
 import showdown from "showdown";
 import { FaGear } from "react-icons/fa6";
@@ -68,19 +68,18 @@ const SharedSpace = () => {
     });
   };
 
-  const handleShareResponse = (response) => {
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      response
-    )}`;
-    const screenWidth = window.screen.width;
-    const screenHeight = window.screen.height;
-    const x = screenWidth / 2 - 400 / 2;
-    const y = screenHeight / 2 - 400 / 2;
-    window.open(shareUrl, "", `width=400,height=400,left=${x},top=${y}`);
-    toast.success("Response Shared via Whatsapp!", {
-      position: "top-center",
-      icon: "✅",
-    });
+  const handleShareResponse = (data) => {
+    console.log(data)
+    if (navigator.share) {
+      navigator.share({
+        text: `${data.bot}`,
+      }).catch(err => console.error(err));
+    } else {
+      toast.error("Sharing not supported on this device!", {
+        position: "top-center",
+        icon: "❌",
+      });
+    }
   };
 
   const renderChat = () => {
@@ -113,9 +112,9 @@ const SharedSpace = () => {
           {msg.user && (
             <div className="bg-gray-100 p-4 rounded-xl md:ms-10">
               <div className="flex items-center justify-between pb-2">
-                <strong>{encchats.slice(0, 15)}: </strong>
+                <strong className="line-clamp-1 me-12" >{encchats}</strong>
                 {msg.timestamp && (
-                  <p className="text-[10px] px-[6px] py-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
+                  <p className="text-[10px] min-w-12 px-[6px] py-[6px] bg-gray-500 text-white rounded-lg w-fit leading-none">
                     {ParseDate(msg.timestamp)}
                   </p>
                 )}
@@ -161,10 +160,10 @@ const SharedSpace = () => {
                     <Tooltip.Root>
                       <Tooltip.Trigger asChild>
                         <button
-                          onClick={() => handleShareResponse(msg.bot)}
+                          onClick={() => handleShareResponse(msg)}
                           className="action-button share-button"
                         >
-                          <TbBrandWhatsapp />
+                          <TbShare />
                         </button>
                       </Tooltip.Trigger>
                       <Tooltip.Portal>

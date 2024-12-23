@@ -61,7 +61,6 @@ const Jarvis1 = () => {
     localStorage.setItem("current_version", "1.0");
   }, []);
 
-
   useEffect(() => {
     try {
       ldb.get('recentbetaChats', (value) => {
@@ -98,7 +97,6 @@ const Jarvis1 = () => {
   const handleChatSubmission = async (message) => {
     setLoading(true);
     try {
-      // console.log(image, imageInlineData)
       const result = await model.generateContent([
         prompt, imageInlineData ?? null
       ]);
