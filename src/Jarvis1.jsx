@@ -157,7 +157,7 @@ const Jarvis1 = () => {
       return;
     }
 
-    const maxSize = 3 * 1024 * 1024;
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       toast.error('File size must be less than 2MB.');
       event.target.value = '';
