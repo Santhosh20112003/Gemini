@@ -26,7 +26,7 @@ function App() {
   useEffect(() => {
     toast.remove();
     toast.success(
-      "Chats are stored locally with the last 5 chats preserved.",
+      "Chats are stored locally with the last 10 chats preserved.",
       {
         position: "top-right",
         duration: 3000,
