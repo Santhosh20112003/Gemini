@@ -11,7 +11,7 @@ import { AiOutlineImport } from "react-icons/ai";
 import { AiOutlineExport } from "react-icons/ai";
 import CryptoJS from "crypto-js";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { TbBrandWhatsapp } from "react-icons/tb";
+import { TbBrandWhatsapp, TbShare } from "react-icons/tb";
 import { TbWorldShare } from "react-icons/tb";
 import { IoArrowUpCircle } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
@@ -72,12 +72,6 @@ const Jarvis2 = () => {
 
   useEffect(() => {
     localStorage.setItem("current_version", "2.0");
-    toast.remove();
-    toast.success("Chats are stored locally with the last 5 chats preserved.", {
-      position: "top-right",
-      duration: 3000,
-      icon: "🥷",
-    });
   }, []);
 
   useEffect(() => {
@@ -254,19 +248,18 @@ const Jarvis2 = () => {
     }
   }
 
-  const handleShareResponse = (response) => {
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      response
-    )}`;
-    const screenWidth = window.screen.width;
-    const screenHeight = window.screen.height;
-    const x = screenWidth / 2 - 400 / 2;
-    const y = screenHeight / 2 - 400 / 2;
-    window.open(shareUrl, "", `width=400,height=400,left=${x},top=${y}`);
-    toast.success("Response Shared via Whatsapp!", {
-      position: "top-center",
-      icon: "✅",
-    });
+  const handleShareResponse = (data) => {
+    console.log(data)
+    if (navigator.share) {
+      navigator.share({
+        text: `${data.bot}`,
+      }).catch(err => console.error(err));
+    } else {
+      toast.error("Sharing not supported on this device!", {
+        position: "top-center",
+        icon: "❌",
+      });
+    }
   };
 
   const handleUploadCode = async (e) => {
@@ -704,10 +697,10 @@ const Jarvis2 = () => {
                         <Tooltip.Root>
                           <Tooltip.Trigger asChild>
                             <button
-                              onClick={() => handleShareResponse(msg.bot)}
+                              onClick={() => handleShareResponse(msg)}
                               className="action-button share-button"
                             >
-                              <TbBrandWhatsapp />
+                              <TbShare />
                             </button>
                           </Tooltip.Trigger>
                           <Tooltip.Portal>
@@ -715,7 +708,7 @@ const Jarvis2 = () => {
                               className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
                               sideOffset={10}
                             >
-                              Shate Response To Whatsapp
+                              Shate AI Response
                               <Tooltip.Arrow className="fill-white" />
                             </Tooltip.Content>
                           </Tooltip.Portal>
@@ -766,7 +759,7 @@ const Jarvis2 = () => {
         </button>
       </form>
       <p className=""></p>
-      <Toaster className="z-[1000000000]" />
+
     </div>
   );
 };

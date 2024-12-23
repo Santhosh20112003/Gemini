@@ -58,15 +58,6 @@ const Jarvis1 = () => {
 
   useEffect(() => {
     localStorage.setItem("current_version", "1.0");
-    toast.remove();
-    toast.success(
-      "Unlike Jarvis 1.0, chats aren't saved locally. Keep in mind.",
-      {
-        position: "top-right",
-        duration: 3000,
-        icon: "🥷",
-      }
-    );
   }, []);
 
   useEffect(() => {
@@ -200,7 +191,7 @@ const Jarvis1 = () => {
     console.log(data)
     if (navigator.share) {
       navigator.share({
-        text: `${data.image}\n${data.user}\n\nJarvis AI:\n${data.bot}`,
+        text: `${data.bot}`,
       }).catch(err => console.error(err));
     } else {
       toast.error("Sharing not supported on this device!", {
@@ -352,7 +343,7 @@ const Jarvis1 = () => {
                                 className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-gray-500 select-none rounded-[4px] bg-white px-[15px] py-[10px] text-[15px] leading-none shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity]"
                                 sideOffset={10}
                               >
-                                Shate Response To Whatsapp
+                                Shate AI Response
                                 <Tooltip.Arrow className="fill-white" />
                               </Tooltip.Content>
                             </Tooltip.Portal>
@@ -431,7 +422,7 @@ const Jarvis1 = () => {
       </div>
 
       <p className=""></p>
-      <Toaster className="z-[1000000000]" />
+
     </div>
   );
 };
