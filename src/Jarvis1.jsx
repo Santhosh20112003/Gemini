@@ -25,7 +25,7 @@ import { FiX } from "react-icons/fi";
 import { RiCameraAiLine } from "react-icons/ri";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyB-P8iQkM37AfybsQHc1EWlqk_MueuW8-E";
+const API_KEY = "AIzaSyCGINQXMwTVCkXIFEnOylIaNAerKKaoOiM";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({
