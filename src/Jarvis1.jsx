@@ -6,7 +6,7 @@ import {
 } from "@google/generative-ai";
 import "./modalscrollbar.css";
 import { v4 as uuidv4 } from "uuid";
-import { TbBrandWhatsapp } from "react-icons/tb";
+import { TbShare } from "react-icons/tb";
 import { IoArrowUpCircle, IoCloseSharp } from "react-icons/io5";
 import { TbCopy } from "react-icons/tb";
 import { FaGear } from "react-icons/fa6";
@@ -22,6 +22,7 @@ import { MdDownload } from "react-icons/md";
 import * as Dialog from "@radix-ui/react-dialog";
 import { LuImagePlus } from "react-icons/lu";
 import { FiX } from "react-icons/fi";
+import { RiCameraAiLine } from "react-icons/ri";
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyB-P8iQkM37AfybsQHc1EWlqk_MueuW8-E";
@@ -45,7 +46,7 @@ const safetySettings = [{ category: HarmCategory.HARM_CATEGORY_HARASSMENT, thres
 
 const MAX_RECENT_CHATS = 5;
 
-const Jarvis2 = () => {
+const Jarvis1 = () => {
   const [conversation, setConversation] = useState([]);
   const [image, setImage] = useState('');
   const [imageInlineData, setImageInlineData] = useState('');
@@ -53,6 +54,7 @@ const Jarvis2 = () => {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const fileInputRef2 = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("current_version", "1.0");
@@ -194,19 +196,18 @@ const Jarvis2 = () => {
     });
   };
 
-  const handleShareResponse = (response) => {
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      response
-    )}`;
-    const screenWidth = window.screen.width;
-    const screenHeight = window.screen.height;
-    const x = screenWidth / 2 - 400 / 2;
-    const y = screenHeight / 2 - 400 / 2;
-    window.open(shareUrl, "", `width=400,height=400,left=${x},top=${y}`);
-    toast.success("Response Shared via Whatsapp!", {
-      position: "top-center",
-      icon: "✅",
-    });
+  const handleShareResponse = (data) => {
+    console.log(data)
+    if (navigator.share) {
+      navigator.share({
+        text: `${data.image}\n${data.user}\n\nJarvis AI:\n${data.bot}`,
+      }).catch(err => console.error(err));
+    } else {
+      toast.error("Sharing not supported on this device!", {
+        position: "top-center",
+        icon: "❌",
+      });
+    }
   };
 
   const handleFormSubmit = (e) => {
@@ -340,10 +341,10 @@ const Jarvis2 = () => {
                           <Tooltip.Root>
                             <Tooltip.Trigger asChild>
                               <button
-                                onClick={() => handleShareResponse(msg.bot)}
+                                onClick={() => handleShareResponse(msg)}
                                 className="action-button share-button"
                               >
-                                <TbBrandWhatsapp />
+                                <TbShare />
                               </button>
                             </Tooltip.Trigger>
                             <Tooltip.Portal>
@@ -402,12 +403,23 @@ const Jarvis2 = () => {
             />
             <input
               type="file"
+              ref={fileInputRef2}
+              onChange={handleImgUpload}
+              accept="image/*"
+              capture="camera"
+              className="hidden"
+            />
+            {!loading && <button type="button" onClick={() => fileInputRef2.current.click()} className="px-1.5 md:hidden ms-3 py-1 bg-blue-500 text-white rounded-lg">
+              <RiCameraAiLine className="text-lg" />
+            </button>}
+            <input
+              type="file"
               ref={fileInputRef}
               onChange={handleImgUpload}
               accept="image/*"
               className="hidden"
             />
-            {!loading && <button type="button" onClick={() => fileInputRef.current.click()} className="px-1.5 ms-3 py-1 bg-blue-500 text-white rounded-lg">
+            {!loading && <button type="button" onClick={() => fileInputRef.current.click()} className="px-1.5  py-1 bg-blue-500 text-white rounded-lg">
               <LuImagePlus className="text-lg" />
             </button>}
             <button type="submit" disabled={loading} className={`disabled:bg-transparent rounded-lg`}>
@@ -424,5 +436,5 @@ const Jarvis2 = () => {
   );
 };
 
-export default Jarvis2;
+export default Jarvis1;
 
