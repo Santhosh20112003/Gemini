@@ -23,6 +23,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { LuImagePlus } from "react-icons/lu";
 import { FiX } from "react-icons/fi";
 import { RiCameraAiLine } from "react-icons/ri";
+import ldb from 'localdata'
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyCGINQXMwTVCkXIFEnOylIaNAerKKaoOiM";
@@ -44,7 +45,7 @@ const generationConfig = {
 
 const safetySettings = [{ category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE, }, { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE, },];
 
-const MAX_RECENT_CHATS = 5;
+const MAX_RECENT_CHATS = 10;
 
 const Jarvis1 = () => {
   const [conversation, setConversation] = useState([]);
@@ -60,19 +61,35 @@ const Jarvis1 = () => {
     localStorage.setItem("current_version", "1.0");
   }, []);
 
+
   useEffect(() => {
-    const recentChats = JSON.parse(localStorage.getItem("recentbetaChats")) || [];
-    setConversation(recentChats);
+    try {
+      ldb.get('recentbetaChats', (value) => {
+        setConversation(JSON.parse(value) || []);
+      });
+    }
+    catch (err) {
+      console.error(err);
+      toast.remove();
+      toast.error('Unable to retrieve chats from local');
+    }
   }, []);
+
+  const saveRecentChats = (chats) => {
+    try {
+      ldb.set('recentbetaChats', JSON.stringify(chats.slice(-MAX_RECENT_CHATS)), () => {
+        console.log('Chats saved successfully');
+      });
+    } catch (err) {
+      console.error(err);
+      toast.remove();
+      toast.error('Your Local Memory is full');
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
   }, [conversation]);
-
-  const saveRecentChats = (chats) => {
-    const recentChats = chats.slice(-MAX_RECENT_CHATS);
-    localStorage.setItem("recentbetaChats", JSON.stringify(recentChats));
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -107,8 +124,9 @@ const Jarvis1 = () => {
       setImage('');
       setImageInlineData('');
     } catch (error) {
-      console.error(error.message);
-      toast.error(`Unable to process your request! `, {
+      console.error(error);
+      toast.remove();
+      toast.error(`Unable to process your request! ${error} `, {
         position: "top-center",
         icon: "❌",
       });
@@ -139,7 +157,7 @@ const Jarvis1 = () => {
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024;
+    const maxSize = 3 * 1024 * 1024;
     if (file.size > maxSize) {
       toast.error('File size must be less than 2MB.');
       event.target.value = '';
@@ -390,7 +408,7 @@ const Jarvis1 = () => {
               autoFocus
               onChange={(e) => setPrompt(e.target.value)}
               className="flex-1 rounded-lg sm:pe-4 py-1 w-[110px] sm:w-auto text-sm focus:outline-none"
-              placeholder="Ask me anything with a image.."
+              placeholder="Ask me anything.."
             />
             <input
               type="file"

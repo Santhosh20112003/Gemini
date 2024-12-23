@@ -28,6 +28,7 @@ import { Link } from "react-router-dom";
 import "./avoid.css";
 import supabase from "./database";
 import * as Dialog from "@radix-ui/react-dialog";
+import ldb from 'localdata'
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyB-P8iQkM37AfybsQHc1EWlqk_MueuW8-E";
@@ -66,8 +67,16 @@ const Jarvis2 = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const recentChats = JSON.parse(localStorage.getItem("recentChats")) || [];
-    setConversation(recentChats);
+    try {
+      ldb.get('recentChats', (value) => {
+        setConversation(JSON.parse(value) || []);
+      });
+    }
+    catch (err) {
+      console.error(err);
+      toast.remove();
+      toast.error('Unable to retrieve chats from local');
+    }
   }, []);
 
   useEffect(() => {
@@ -79,8 +88,15 @@ const Jarvis2 = () => {
   }, [conversation]);
 
   const saveRecentChats = (chats) => {
-    const recentChats = chats.slice(-MAX_RECENT_CHATS);
-    localStorage.setItem("recentChats", JSON.stringify(recentChats));
+    try {
+      ldb.set('recentChats', JSON.stringify(chats.slice(-MAX_RECENT_CHATS)), () => {
+        console.log('Chats saved successfully');
+      });
+    } catch (err) {
+      console.error(err);
+      toast.remove();
+      toast.error('Your Local Memory is full');
+    }
   };
 
   const scrollToBottom = () => {
@@ -163,36 +179,38 @@ const Jarvis2 = () => {
   async function encrypt() {
     setLinkLoading(true);
     try {
-      const jsonString = JSON.stringify(localStorage.getItem("recentChats"));
-      if (prevChat != jsonString) {
-        if (conversation.length != 0) {
-          setprevChat(jsonString);
-          const encryptedString = CryptoJS.AES.encrypt(
-            jsonString,
-            "HELLO"
-          ).toString();
-          const bstring = btoa(encryptedString);
-          const key = btoa(new Date().toString());
-          const { error: inserterror } = await supabase.from("jarvis").insert({
-            key: key,
-            value: bstring,
-          });
-          if (inserterror) {
-            toast.error("Unable to Generate Link try later", {
-              position: "top-right",
-              icon: "❌",
+      ldb.get("recentChats", async (localvalue) => {
+        const jsonString = JSON.stringify(localvalue);
+        if (prevChat != jsonString) {
+          if (conversation.length != 0) {
+            setprevChat(jsonString);
+            const encryptedString = CryptoJS.AES.encrypt(
+              jsonString,
+              "HELLO"
+            ).toString();
+            const bstring = btoa(encryptedString);
+            const key = btoa(new Date().toString());
+            const { error: inserterror } = await supabase.from("jarvis").insert({
+              key: key,
+              value: bstring,
             });
+            if (inserterror) {
+              toast.error("Unable to Generate Link try later", {
+                position: "top-right",
+                icon: "❌",
+              });
+            } else {
+              setenc(`${window.origin}/v2/share/${key}`);
+            }
           } else {
-            setenc(`${window.origin}/v2/share/${key}`);
+            toast.remove();
+            toast.error("No Chats Are Found in Your Space", {
+              position: "top-right",
+              icon: "🥷",
+            });
           }
-        } else {
-          toast.remove();
-          toast.error("No Chats Are Found in Your Space", {
-            position: "top-right",
-            icon: "🥷",
-          });
         }
-      }
+      })
     } catch (err) {
       console.log(err);
       toast.error("Unable to Generate Link try later", {
@@ -207,36 +225,38 @@ const Jarvis2 = () => {
   async function generateCode() {
     setGenerating(true);
     try {
-      const jsonString = JSON.stringify(localStorage.getItem("recentChats"));
-      if (prevChat != jsonString) {
-        if (conversation.length != 0) {
-          setprevChat(jsonString);
-          const encryptedString = CryptoJS.AES.encrypt(
-            jsonString,
-            "HELLO"
-          ).toString();
-          const bstring = btoa(encryptedString);
-          const key = btoa(new Date().toString());
-          const { error: inserterror } = await supabase.from("jarvis").insert({
-            key: key,
-            value: bstring,
-          });
-          if (inserterror) {
-            toast.error("Unable to Generate Link try later", {
-              position: "top-right",
-              icon: "❌",
+      ldb.get("recentChats", async (localdata) => {
+        const jsonString = JSON.stringify(localdata);
+        if (prevChat != jsonString) {
+          if (conversation.length != 0) {
+            setprevChat(jsonString);
+            const encryptedString = CryptoJS.AES.encrypt(
+              jsonString,
+              "HELLO"
+            ).toString();
+            const bstring = btoa(encryptedString);
+            const key = btoa(new Date().toString());
+            const { error: inserterror } = await supabase.from("jarvis").insert({
+              key: key,
+              value: bstring,
             });
+            if (inserterror) {
+              toast.error("Unable to Generate Link try later", {
+                position: "top-right",
+                icon: "❌",
+              });
+            } else {
+              setcode(key);
+            }
           } else {
-            setcode(key);
+            toast.remove();
+            toast.error("No Chats Are Found in Your Space", {
+              position: "top-right",
+              icon: "🥷",
+            });
           }
-        } else {
-          toast.remove();
-          toast.error("No Chats Are Found in Your Space", {
-            position: "top-right",
-            icon: "🥷",
-          });
         }
-      }
+      })
     } catch (err) {
       console.log(err);
       toast.error("Unable to Generate Link try later", {
