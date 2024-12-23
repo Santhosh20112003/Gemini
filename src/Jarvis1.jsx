@@ -81,7 +81,7 @@ const Jarvis1 = () => {
   const handleChatSubmission = async (message) => {
     setLoading(true);
     try {
-      console.log(image, imageInlineData)
+      // console.log(image, imageInlineData)
       const result = await model.generateContent([
         prompt, imageInlineData ?? null
       ]);
@@ -400,7 +400,7 @@ const Jarvis1 = () => {
               capture="camera"
               className="hidden"
             />
-            {!loading && <button type="button" onClick={() => fileInputRef2.current.click()} className="px-1.5 md:hidden ms-3 py-1 bg-blue-500 text-white rounded-lg">
+            {(!loading && !image) && <button type="button" onClick={() => fileInputRef2.current.click()} className="px-1.5 md:hidden ms-3 py-1 bg-blue-500 text-white rounded-lg">
               <RiCameraAiLine className="text-lg" />
             </button>}
             <input
@@ -410,7 +410,7 @@ const Jarvis1 = () => {
               accept="image/*"
               className="hidden"
             />
-            {!loading && <button type="button" onClick={() => fileInputRef.current.click()} className="px-1.5  py-1 bg-blue-500 text-white rounded-lg">
+            {(!loading && !image) && <button type="button" onClick={() => fileInputRef.current.click()} className="px-1.5  py-1 bg-blue-500 text-white rounded-lg">
               <LuImagePlus className="text-lg" />
             </button>}
             <button type="submit" disabled={loading} className={`disabled:bg-transparent rounded-lg`}>
