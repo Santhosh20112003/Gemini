@@ -110,9 +110,8 @@ const Board = () => {
               </div>
             ) : squares.includes(null) ? (
               <div
-                className={`transition-all p-3 rounded-full w-12 h-12 flex items-center justify-center ${
-                  isXNext ? "bg-gray-100" : "bg-gray-100 scale-125"
-                }`}
+                className={`transition-all p-3 rounded-full w-12 h-12 flex items-center justify-center ${isXNext ? "bg-gray-100" : "bg-gray-100 scale-125"
+                  }`}
               >
                 {isXNext ? (
                   <svg
@@ -159,7 +158,7 @@ const Board = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 shadow-2xl rounded-xl relative overflow-hidden">
+        <div className="grid grid-cols-3 gap-2 rounded-xl relative overflow-hidden">
           {renderSquare(0)}
           {renderSquare(1)}
           {renderSquare(2)}

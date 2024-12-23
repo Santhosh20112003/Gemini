@@ -554,13 +554,13 @@ const Jarvis2 = () => {
             className={` rounded-full px-3 py-1 md:px-5 md:py-2 border-2 text-sm sm:text-base border-transparent text-white font-semibold`}
             to={"/v1"}
           >
-            Jarvis 1.0
+            Jarvis Beta
           </Link>
           <Link
             className={`bg-white rounded-full px-3 py-1 md:px-5 md:py-2 text-sm sm:text-base border-2 border-white shadow-md text-blue-500 font-semibold`}
             to={"/v2"}
           >
-            Jarvis 2.0
+            Jarvis
           </Link>
         </span>
         <AlertDialog.Root>
@@ -642,7 +642,7 @@ const Jarvis2 = () => {
           </AlertDialog.Portal>
         </AlertDialog.Root>
       </div>
-      <div className="w-full md:w-[70%] chat-cont overflow-y-auto max-h-[85vh]  sm:max-h-[76vh]">
+      <div className={`w-full md:w-[70%] chat-cont overflow-y-auto max-h-[85vh] sm:max-h-[76vh] ${conversation.length === 0 && 'md:max-h-[80vh]'}`}>
         {conversation.length === 0 ? (
           <div className="flex items-center mb-10 justify-center gap-5 flex-col">
             <Game className="rounded-md bg-gray-300 shadow-sm" />
@@ -740,7 +740,7 @@ const Jarvis2 = () => {
       </div>
       <form
         onSubmit={handleFormSubmit}
-        className="w-full md:w-3/4 lg:w-1/2 max-h-[50px] sm:max-h-[60px] md:max-h-[60px]  flex mt-2 items-center justify-between p-2 rounded-full bg-white space-x-2"
+        className="w-full md:w-3/4 lg:w-1/2 max-h-[50px] sm:max-h-[60px] md:max-h-[60px]  flex mt-2 items-center justify-between p-2 rounded-xl bg-white space-x-2"
       >
         <input
           value={prompt}
