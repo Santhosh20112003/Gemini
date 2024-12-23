@@ -1,68 +1,72 @@
-.chat pre{
-    margin: 12px 0;
-    background: #212121;
-    padding: 10px;
-    border-radius: 10px;
-    color: #fff;
-    white-space: pre-wrap;
-    border: 2px solid white;
-    outline: 2px solid #212121;
+.chat pre {
+  margin: 12px 0;
+  background: #212121;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  white-space: pre-wrap;
+  border: 2px solid white;
+  outline: 2px solid #212121;
+  line-height: 1.5rem;
 }
 
-.chat code{
-    background: #212121;
-    padding: 5px;
-    border-radius: 10px;
-    color: #fff;
+.chat code {
+  background: #212121;
+  padding: 5px;
+  border-radius: 10px;
+  color: #fff;
+  line-height: 2rem;
 }
 
 .no-tailwindcss {
-    all: unset !important;
+  all: unset !important;
 }
 
-.chat-cont{
-    -webkit-overflow-scrolling: touch;
-    padding: 10px;
+.chat-cont {
+  -webkit-overflow-scrolling: touch;
+  padding: 10px;
 }
 
-.chat{
-    overflow-wrap: break-word;
-    font-size: 0.9rem;
+.chat {
+  overflow-wrap: break-word;
+  font-size: 0.9rem;
 }
 
-.chat pre > code{
-    background: #212121;
-    color: #fff;
-    padding: 5px;
-    border-radius: 10px;
-    margin: 3px 0;
+.chat pre > code {
+  background: #212121;
+  color: #fff;
+  padding: 5px;
+  border-radius: 10px;
+  margin: 3px 0;
+  line-height: 1.5rem;
 }
-.chat pre ::selection{
-    background-color: #fff;
-    color: #212121;
+.chat pre ::selection {
+  background-color: #fff;
+  color: #212121;
 }
 
-.chat ol, ul, menu {
-    display: block;
-    list-style-type: none;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
-    unicode-bidi: isolate;
+.chat ol,
+ul,
+menu {
+  display: block;
+  list-style-type: none;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+  unicode-bidi: isolate;
 }
 
 .chat li {
-    margin-top: 0.6em;
-    list-style-type: square;
-    margin-bottom: 0.6em;
-    text-align: -webkit-match-parent
+  margin-top: 0.6em;
+  list-style-type: square;
+  margin-bottom: 0.6em;
+  text-align: -webkit-match-parent;
 }
 
-
-.cc-1si9v{
-    opacity: 0 !important;
-    display: none !important;
-    transform: scale(0) !important;
-  }
+.cc-1si9v {
+  opacity: 0 !important;
+  display: none !important;
+  transform: scale(0) !important;
+}
