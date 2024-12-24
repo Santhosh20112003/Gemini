@@ -125,7 +125,7 @@ const Jarvis1 = () => {
     } catch (error) {
       console.error(error);
       toast.remove();
-      toast.error(`Unable to process your request! ${error} `, {
+      toast.error(`Unable to process your request!`, {
         position: "top-center",
         icon: "❌",
       });
@@ -139,7 +139,7 @@ const Jarvis1 = () => {
     const file = files[0];
 
     new Compressor(file, {
-      quality: 0.6,
+      quality: 0.2,
       mimeType: "image/png",
 
       success(result) {
@@ -172,7 +172,7 @@ const Jarvis1 = () => {
         });
       },
       error(err) {
-        console.loh(err);
+        console.log(err);
         if (files.length === 0) {
           toast.error('No file selected.');
           return;
@@ -202,7 +202,6 @@ const Jarvis1 = () => {
         });
       },
     });
-
   };
 
   const getBase64 = (file) => new Promise(function (resolve, reject) {
