@@ -24,6 +24,7 @@ import { LuImagePlus } from "react-icons/lu";
 import { FiX } from "react-icons/fi";
 import { RiCameraAiLine } from "react-icons/ri";
 import ldb from 'localdata'
+import Compressor from "compressorjs";
 
 const converter = new showdown.Converter();
 const API_KEY = "AIzaSyCGINQXMwTVCkXIFEnOylIaNAerKKaoOiM";
@@ -135,33 +136,72 @@ const Jarvis1 = () => {
 
   const handleImgUpload = (event) => {
     const files = event.target.files;
-
-    if (files.length === 0) {
-      toast.error('No file selected.');
-      return;
-    }
-
     const file = files[0];
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload a valid image file.');
-      event.target.value = '';
-      return;
-    }
 
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      toast.error('File size must be less than 5MB.');
-      event.target.value = '';
-      return;
-    }
+    new Compressor(file, {
+      quality: 0.6,
+      mimeType: "image/png",
 
-    getBase64(file).then((result) => {
-      setImage(result);
-    }).catch(e => { console.log(e); toast.error(e) });
+      success(result) {
+        console.log(result)
+        if (result.length === 0) {
+          toast.error('No file selected.');
+          return;
+        }
 
-    fileToGenerativePart(file).then((image) => {
-      setImageInlineData(image);
+
+        if (!result.type.startsWith('image/')) {
+          toast.error('Please upload a valid image file.');
+          event.target.value = '';
+          return;
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        if (result.size > maxSize) {
+          toast.error('File size must be less than 5MB.');
+          event.target.value = '';
+          return;
+        }
+
+        getBase64(result).then((res) => {
+          setImage(res);
+        }).catch(e => { console.log(e); toast.error(e) });
+
+        fileToGenerativePart(result).then((image) => {
+          setImageInlineData(image);
+        });
+      },
+      error(err) {
+        console.loh(err);
+        if (files.length === 0) {
+          toast.error('No file selected.');
+          return;
+        }
+
+
+        if (!file.type.startsWith('image/')) {
+          toast.error('Please upload a valid image file.');
+          event.target.value = '';
+          return;
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+          toast.error('File size must be less than 5MB.');
+          event.target.value = '';
+          return;
+        }
+
+        getBase64(file).then((result) => {
+          setImage(result);
+        }).catch(e => { console.log(e); toast.error(e) });
+
+        fileToGenerativePart(file).then((image) => {
+          setImageInlineData(image);
+        });
+      },
     });
+
   };
 
   const getBase64 = (file) => new Promise(function (resolve, reject) {
@@ -281,7 +321,7 @@ const Jarvis1 = () => {
                               {uuidv4() + '.png'}
                             </Dialog.Title>
                             <div className="flex items-center gap-2">
-                              <a title="download" href={msg.image} download={uuidv4()} className='active:scale-90 text-gray-500 transition-all' >
+                              <a title="download" href={msg.image} download={`${uuidv4()}.png`} className='active:scale-90 text-gray-500 transition-all' >
                                 <MdDownload />
                               </a>
                               <Dialog.Close asChild>
