@@ -156,12 +156,12 @@ const Jarvis1 = () => {
           return;
         }
 
-        const maxSize = 5 * 1024 * 1024;
-        if (result.size > maxSize) {
-          toast.error('File size must be less than 5MB.');
-          event.target.value = '';
-          return;
-        }
+        // const maxSize = 5 * 1024 * 1024;
+        // if (result.size > maxSize) {
+        //   toast.error('File size must be less than 5MB.');
+        //   event.target.value = '';
+        //   return;
+        // }
 
         getBase64(result).then((res) => {
           setImage(res);
@@ -185,12 +185,13 @@ const Jarvis1 = () => {
           return;
         }
 
-        const maxSize = 5 * 1024 * 1024;
-        if (file.size > maxSize) {
-          toast.error('File size must be less than 5MB.');
-          event.target.value = '';
-          return;
-        }
+        // const maxSize = 5 * 1024 * 1024;
+
+        // if (file.size > maxSize) {
+        //   toast.error('File size must be less than 5MB.');
+        //   event.target.value = '';
+        //   return;
+        // }
 
         getBase64(file).then((result) => {
           setImage(result);
