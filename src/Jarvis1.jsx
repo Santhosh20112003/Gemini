@@ -133,7 +133,7 @@ const Jarvis1 = () => {
     }
   };
 
-  function handleImgUpload(event) {
+  const handleImgUpload = (event) => {
     const files = event.target.files;
 
     if (files.length === 0) {
@@ -141,14 +141,7 @@ const Jarvis1 = () => {
       return;
     }
 
-    if (files.length > 1) {
-      toast.error('Please upload only one image.');
-      event.target.value = '';
-      return;
-    }
-
     const file = files[0];
-
     if (!file.type.startsWith('image/')) {
       toast.error('Please upload a valid image file.');
       event.target.value = '';
@@ -157,20 +150,19 @@ const Jarvis1 = () => {
 
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error('File size must be less than 2MB.');
+      toast.error('File size must be less than 5MB.');
       event.target.value = '';
       return;
     }
 
     getBase64(file).then((result) => {
       setImage(result);
-    }).catch(e => console.log(e))
+    }).catch(e => { console.log(e); toast.error(e) });
 
     fileToGenerativePart(file).then((image) => {
       setImageInlineData(image);
     });
-
-  }
+  };
 
   const getBase64 = (file) => new Promise(function (resolve, reject) {
     let reader = new FileReader();
@@ -408,24 +400,11 @@ const Jarvis1 = () => {
               className="flex-1 rounded-lg sm:pe-4 py-1 w-[110px] sm:w-auto text-sm focus:outline-none"
               placeholder="Ask me anything.."
             />
-            <input
-              type="file"
-              ref={fileInputRef2}
-              onChange={handleImgUpload}
-              accept="image/*"
-              capture="camera"
-              className="hidden"
-            />
+            <input type="file" ref={fileInputRef} onChange={handleImgUpload} accept="image/*" hidden />
+            <input type="file" ref={fileInputRef2} onChange={handleImgUpload} accept="image/*" capture="environment" hidden />
             {(!loading && !image) && <button type="button" onClick={() => fileInputRef2.current.click()} className="px-1.5 md:hidden ms-3 py-1 bg-blue-500 text-white rounded-lg">
               <RiCameraAiLine className="text-lg" />
             </button>}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImgUpload}
-              accept="image/*"
-              className="hidden"
-            />
             {(!loading && !image) && <button type="button" onClick={() => fileInputRef.current.click()} className="px-1.5  py-1 bg-blue-500 text-white rounded-lg">
               <LuImagePlus className="text-lg" />
             </button>}
