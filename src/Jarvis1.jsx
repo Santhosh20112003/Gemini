@@ -27,7 +27,7 @@ import ldb from 'localdata'
 import Compressor from "compressorjs";
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyCGINQXMwTVCkXIFEnOylIaNAerKKaoOiM";
+const API_KEY = "AIzaSyDFetus7lrC59ov9zzgxuCBWL9GspCjKvE";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({

@@ -31,7 +31,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import ldb from 'localdata'
 
 const converter = new showdown.Converter();
-const API_KEY = "AIzaSyB-P8iQkM37AfybsQHc1EWlqk_MueuW8-E";
+const API_KEY = "AIzaSyCSuPhWSz2H-PwwWStdp9_lQePHNo1f-UU";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const model = genAI.getGenerativeModel({
